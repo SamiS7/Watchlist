@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> d613ab35bd9315db5f1374450f834db41a468915
 # Compiled class file
 *.class
 
@@ -20,8 +23,11 @@
 *.tar.gz
 *.rar
 
+<<<<<<< HEAD
 target
 .idea
 
+=======
+>>>>>>> d613ab35bd9315db5f1374450f834db41a468915
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
