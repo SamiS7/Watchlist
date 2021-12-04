@@ -1,19 +1,17 @@
 package com.htlleonding.watchlist;
 
+import com.htlleonding.watchlist.UI.pages.Home;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
+    Integer userId;
+    Integer width;
+    Integer height;
     @Override
     public void start(Stage stage) {
-
-        HBox root = new HBox();
-
-        Scene scene = new Scene(root, 900, 600);
-        stage.setScene(scene);
+        Home homePage = new Home(userId, width, height);
+        stage.setScene(homePage);
         stage.setTitle("Watchlist");
         stage.show();
     }
