@@ -1,0 +1,134 @@
+* {
+    -body-bgc: #1c1c1c;
+    -menu-bgc: -body-bgc;
+    -menu-border-color: #2a2a2a;
+    -body-font-color: #dadada;
+    -menu-font-color: #dadada;
+    -menu-width: 400;
+    -menu-button-height: 30;
+    -textFied-color: #606060;
+    -search-button-color: #0077ff;
+}
+
+.root {
+    -fx-background-color: -body-bgc;
+    -fx-text-fill: -body-font-color;
+}
+.menu {
+    -fx-pref-width: -menu-width;
+    -fx-min-width: 150;
+    -fx-pref-height: 1500;
+    -fx-background-color: -menu-bgc;
+    -fx-border-width: 0 3 0 0;
+    -fx-border-color: -menu-border-color;
+    -fx-border-style: solid;
+    -fx-alignment: top-center;
+    -fx-spacing: 5;
+    -fx-padding: 0;
+    -fx-border-insets: 0;
+}
+
+.menu .button {
+    -fx-background-color: -menu-bgc;
+    -fx-text-fill: -menu-font-color;
+    -fx-font-size: 20;
+    -fx-font-weight: 600;
+    -fx-pref-width: -menu-width;
+    -fx-pref-height: -menu-button-height;
+    -fx-padding: 20 0 20 8;
+    -fx-alignment: center-left;
+}
+
+.menu .button:hover {
+    -fx-font-weight: 700;
+}
+
+.menu .menuIcon {
+    -fx-border-width: 0 0 2 0;
+    -fx-border-insets: 0 0 20 0;
+    -fx-border-color: -menu-border-color;
+    -fx-border-style: solid;
+}
+
+.menu .menuIcon:hover .menuIV {
+    -fx-scale-x: 1.1;
+
+}
+
+.content {
+    -fx-pref-width: 2000;
+    -fx-pref-height: 1500;
+    -fx-background-color: #6e6e6e;
+    -fx-background-color: -body-bgc;
+    -fx-padding: 5;
+}
+
+.content > .tilePane {
+    -fx-border-width: 2;
+    -fx-border-color: -menu-border-color;
+    -fx-border-style: solid;
+}
+
+.searchBox {
+    -fx-pref-width: 2000;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+.searchBox .text-field, .searchBox .button {
+    -fx-pref-height: 50;
+    -fx-font-size: 16;
+    -fx-text-fill: -body-font-color;
+}
+
+.searchBox .text-field {
+    -fx-pref-width: 500;
+    -fx-background-color: -textFied-color;
+}
+
+.searchBox .button {
+    -fx-pref-width: 100;
+    -fx-background-color: -search-button-color;
+}
+
+.scrollbar, .scrollbar > .viewport {
+    -fx-background-color: -body-bgc;
+}
+
+.leftVB, .rightVB {
+    -fx-pref-height: 1500;
+    -fx-pref-width: 1000;
+    -fx-background-color: -body-bgc;
+}
+
+.borderpane {
+
+}
+
+.leftVB {
+    -fx-spacing: 10;
+}
+
+.borderpane .label {
+    -fx-text-fill: -body-font-color;
+    -fx-wrap-text: true;
+    -fx-font-size: 16;
+}
+
+.title {
+    -fx-font-size: 50;
+    -fx-alignment: top-center;
+}
+
+.plot {
+    -fx-border-insets: 10 0 50 0;
+    -fx-padding: 0 0 100 0;
+}
+
+.saveButton {
+    -fx-alignment: bottom-center;
+    -fx-pref-width: 50;
+    -fx-pref-height: 30;
+    -fx-font-size: 16;
+    -fx-background-color: -search-button-color;
+}

@@ -1,29 +1,30 @@
 package com.htlleonding.watchlist.db.dbclass;
 import jakarta.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 public class MovieInfos {
     @Id
     private String id;
     private String title;
-    private LocalDate year;
+    private String year;
     private String plot;
     private String type;
     private String genres;
+    private String casting;
     private String posterName;
     private double rating;
 
     public MovieInfos() {
     }
 
-    public MovieInfos(String id, String title, LocalDate year, String plot, String type, String genres, String posterName, Double rating) {
+    public MovieInfos(String id, String title, String year, String plot, String type, String genres, String casting, String posterName, Double rating) {
         this.id = id;
         this.title = title;
         this.year = year;
         this.plot = plot;
         this.type = type;
         this.genres = genres;
+        this.casting = casting;
         this.posterName = posterName;
         this.rating = rating;
     }
@@ -44,11 +45,11 @@ public class MovieInfos {
         this.title = title;
     }
 
-    public LocalDate getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(LocalDate year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
@@ -76,6 +77,14 @@ public class MovieInfos {
         this.genres = genres;
     }
 
+    public String getCasting() {
+        return casting;
+    }
+
+    public void setCasting(String casting) {
+        this.casting = casting;
+    }
+
     public String getPosterName() {
         return posterName;
     }
@@ -91,4 +100,5 @@ public class MovieInfos {
     public void setRating(double rating) {
         this.rating = rating;
     }
+
 }

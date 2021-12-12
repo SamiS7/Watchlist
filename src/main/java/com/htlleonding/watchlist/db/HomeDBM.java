@@ -64,7 +64,7 @@ public class HomeDBM {
     public List<Poster> getPosterData(List<MovieInfos> movieInfos) {
         List<Poster> list = new LinkedList<>();
         for(MovieInfos m:movieInfos) {
-            Image img = new Image(getClass().getResourceAsStream("/images/" + m.getPosterName()));
+            Image img = new Image(getClass().getResourceAsStream("/images/posters" + m.getPosterName()));
             list.add(new Poster(img,m.getId(), m.getTitle()));
         }
         return list;

@@ -20,6 +20,7 @@ public class MovieRow extends VBox {
         this.listCategory = listCategory;
         this.userId = userId;
         this.limit = limit;
+        //initBox();
     }
 
     public ListCategory getListCategory() {
