@@ -1,8 +1,7 @@
-package com.htlleonding.watchlist.UI.pages;
+package com.htlleonding.watchlist.ui.pages;
 
-import com.htlleonding.watchlist.UI.components.MovieRow;
+import com.htlleonding.watchlist.ui.components.MovieRow;
 import com.htlleonding.watchlist.enums.ListCategory;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class Home extends VBox {

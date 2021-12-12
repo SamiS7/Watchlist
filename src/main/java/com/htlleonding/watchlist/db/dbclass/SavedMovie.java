@@ -1,5 +1,6 @@
-package com.htlleonding.watchlist.db;
+package com.htlleonding.watchlist.db.dbclass;
 
+import com.htlleonding.watchlist.db.dbclass.MovieId;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 

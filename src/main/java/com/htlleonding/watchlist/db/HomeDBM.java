@@ -1,5 +1,7 @@
 package com.htlleonding.watchlist.db;
 
+import com.htlleonding.watchlist.db.dbclass.MovieInfos;
+import com.htlleonding.watchlist.db.dbclass.SavedMovie;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -9,16 +11,16 @@ import javafx.scene.image.Image;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DBM {
+public class HomeDBM {
     private EntityManager entityManager;
-    private static DBM dbm;
+    private static HomeDBM dbm;
 
-    private DBM() {
+    private HomeDBM() {
         entityManager = getEntityManager();
     }
 
-    public static DBM getDbm() {
-        return dbm == null ? new DBM() : dbm;
+    public static HomeDBM getDbm() {
+        return dbm == null ? new HomeDBM() : dbm;
     }
 
     private EntityManager getEntityManager() {

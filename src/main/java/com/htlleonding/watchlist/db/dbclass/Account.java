@@ -1,4 +1,4 @@
-package com.htlleonding.watchlist.db;
+package com.htlleonding.watchlist.db.dbclass;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

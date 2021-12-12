@@ -4,5 +4,5 @@ module com.htlleonding.watchlist {
     requires jakarta.persistence;
 
     exports com.htlleonding.watchlist;
-    exports com.htlleonding.watchlist.UI.pages;
+    exports com.htlleonding.watchlist.ui.pages;
 }

@@ -1,4 +1,4 @@
-package com.htlleonding.watchlist.db;
+package com.htlleonding.watchlist.db.dbclass;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 

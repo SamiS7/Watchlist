@@ -1,6 +1,6 @@
-package com.htlleonding.watchlist.UI.components;
+package com.htlleonding.watchlist.ui.components;
 
-import com.htlleonding.watchlist.db.DBM;
+import com.htlleonding.watchlist.db.HomeDBM;
 import com.htlleonding.watchlist.db.Poster;
 import com.htlleonding.watchlist.enums.ListCategory;
 import javafx.scene.image.ImageView;
@@ -64,11 +64,11 @@ public class MovieRow extends VBox {
 
     public List<Poster> getMovieData() {
         return switch (listCategory) {
-            case SHORTLY_SAVED -> DBM.getDbm().getShortlyAdded(userId, limit);
-            case MY_WATCHLIST -> DBM.getDbm().getWatchlist(userId);
-            case SEEN -> DBM.getDbm().getWatchedMovies(userId, limit);
-            case NOT_SEEN -> DBM.getDbm().getNotWatchedMovies(userId, limit);
-            case FAMOUS -> DBM.getDbm().getBestRated(limit);
+            case SHORTLY_SAVED -> HomeDBM.getDbm().getShortlyAdded(userId, limit);
+            case MY_WATCHLIST -> HomeDBM.getDbm().getWatchlist(userId);
+            case SEEN -> HomeDBM.getDbm().getWatchedMovies(userId, limit);
+            case NOT_SEEN -> HomeDBM.getDbm().getNotWatchedMovies(userId, limit);
+            case FAMOUS -> HomeDBM.getDbm().getBestRated(limit);
         };
     }
 }

@@ -1,11 +1,9 @@
 package com.htlleonding.watchlist;
 
-import com.htlleonding.watchlist.UI.pages.Home;
+import com.htlleonding.watchlist.ui.pages.Home;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;

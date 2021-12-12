@@ -1,11 +1,12 @@
-package com.htlleonding.watchlist.db;
+package com.htlleonding.watchlist.db.dbclass;
 
 import jakarta.persistence.Embeddable;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class MovieId {
+public class MovieId implements Serializable {
     private Integer accountId;
     private String movieId;
 
