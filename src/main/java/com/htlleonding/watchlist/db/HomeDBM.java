@@ -6,7 +6,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
-import javafx.scene.image.Image;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -64,8 +63,7 @@ public class HomeDBM {
     public List<Poster> getPosterData(List<MovieInfos> movieInfos) {
         List<Poster> list = new LinkedList<>();
         for(MovieInfos m:movieInfos) {
-            Image img = new Image(getClass().getResourceAsStream("/images/posters" + m.getPosterName()));
-            list.add(new Poster(img,m.getId(), m.getTitle()));
+            list.add(new Poster(m.getPosterUrl() ,m.getId(), m.getTitle()));
         }
         return list;
     }

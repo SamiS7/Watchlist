@@ -33,9 +33,9 @@ public class MovieDetail extends BorderPane {
         Label plot = new Label(movieInfos.getPlot());
         plot.getStyleClass().add("plot");
         plot.getStyleClass().add("plot");
-        Label cast = new Label("Schauspieler: " + movieInfos.getCasting());
+        Label cast = new Label("Schauspieler: " + movieInfos.getStars());
         Label genre = new Label(movieInfos.getGenres());
-        Label rating = new Label(movieInfos.getRating() + "");
+        Label rating = new Label(movieInfos.getImdbRatin() + "");
         Label year = new Label("Jahr: " + movieInfos.getYear());
         String bStr = !isSaved ? "Hinzufügen": "Löschen";
         Button saveForLater = new Button(bStr);
@@ -53,7 +53,7 @@ public class MovieDetail extends BorderPane {
 
         this.setBottom(saveForLater);
 
-        Image image = new Image(movieInfos.getPosterName());
+        Image image = new Image(movieInfos.getPosterUrl());
         ImageView iv = new ImageView(image);
         iv.prefHeight(1500);
         this.setRight(iv);

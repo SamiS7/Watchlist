@@ -3,22 +3,20 @@ package com.htlleonding.watchlist.db;
 import javafx.scene.image.Image;
 
 public class Poster {
-    private Image image;
-    private String id;
-    private String titel;
+    private String imageUrl, id, titel;
 
-    public Poster(Image image, String id, String titel) {
-        this.image = image;
+    public Poster(String imageUrl, String id, String titel) {
+        this.imageUrl = imageUrl;
         this.id = id;
         this.titel = titel;
     }
 
-    public Image getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getId() {

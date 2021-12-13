@@ -4,29 +4,33 @@ import jakarta.persistence.*;
 @Entity
 public class MovieInfos {
     @Id
-    private String id;
-    private String title;
-    private String year;
-    private String plot;
-    private String type;
-    private String genres;
-    private String casting;
-    private String posterName;
-    private double rating;
+    String id;
+    String title;
+    String year;
+    String plot;
+    String type;
+    String genres;
+    String stars;
+    String posterUrl;
+    String trailerUrl;
+    String thumbNail;
+    Double imdbRating;
 
     public MovieInfos() {
     }
 
-    public MovieInfos(String id, String title, String year, String plot, String type, String genres, String casting, String posterName, Double rating) {
+    public MovieInfos(String id, String title, String year, String plot, String type, String genres, String stars, String posterUrl, String trailerUrl, String thumbNail, Double imdbRating) {
         this.id = id;
         this.title = title;
         this.year = year;
         this.plot = plot;
         this.type = type;
         this.genres = genres;
-        this.casting = casting;
-        this.posterName = posterName;
-        this.rating = rating;
+        this.stars = stars;
+        this.posterUrl = posterUrl;
+        this.trailerUrl = trailerUrl;
+        this.thumbNail = thumbNail;
+        this.imdbRating = imdbRating;
     }
 
     public String getId() {
@@ -77,28 +81,43 @@ public class MovieInfos {
         this.genres = genres;
     }
 
-    public String getCasting() {
-        return casting;
+    public String getStars() {
+        return stars;
     }
 
-    public void setCasting(String casting) {
-        this.casting = casting;
+    public void setStars(String stars) {
+        this.stars = stars;
     }
 
-    public String getPosterName() {
-        return posterName;
+    public String getPosterUrl() {
+        return posterUrl;
     }
 
-    public void setPosterName(String posterName) {
-        this.posterName = posterName;
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
-    public double getRating() {
-        return rating;
+    public String getTrailerUrl() {
+        return trailerUrl;
     }
 
-    public void setRating(double rating) {
-        this.rating = rating;
+    public void setTrailerUrl(String trailerUrl) {
+        this.trailerUrl = trailerUrl;
     }
 
+    public String getThumbNail() {
+        return thumbNail;
+    }
+
+    public void setThumbNail(String thumbNail) {
+        this.thumbNail = thumbNail;
+    }
+
+    public Double getImdbRatin() {
+        return imdbRating;
+    }
+
+    public void setImdbRatin(Double imdbRating) {
+        this.imdbRating = imdbRating;
+    }
 }

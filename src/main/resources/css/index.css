@@ -115,8 +115,8 @@
     -fx-font-size: 16;
 }
 
-.title {
-    -fx-font-size: 50;
+.borderpane .title {
+    -fx-font-size: 30;
     -fx-alignment: top-center;
 }
 
@@ -127,7 +127,7 @@
 
 .saveButton {
     -fx-alignment: bottom-center;
-    -fx-pref-width: 50;
+    -fx-pref-width: 150;
     -fx-pref-height: 30;
     -fx-font-size: 16;
     -fx-background-color: -search-button-color;

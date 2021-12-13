@@ -3,6 +3,7 @@ package com.htlleonding.watchlist.ui.components;
 import com.htlleonding.watchlist.db.HomeDBM;
 import com.htlleonding.watchlist.db.Poster;
 import com.htlleonding.watchlist.enums.ListCategory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -58,7 +59,8 @@ public class MovieRow extends VBox {
         List<Poster> movieData = getMovieData();
 
         for (Poster m : movieData) {
-            h.getChildren().add(new ImageView(m.getImage()));
+            Image image = new Image(m.getImageUrl());
+            h.getChildren().add(new ImageView(image));
         }
         return h;
     }
