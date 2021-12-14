@@ -95,12 +95,14 @@ public class SearchPage extends VBox {
                     conn.connect();
                     int responseCode = conn.getResponseCode();
 
+                   InputStream response = conn.getInputStream();
+
                     if (responseCode != 200) {
                         return null;
-                    }
+                    } else 
                     {
                         StringBuilder informationString = new StringBuilder();
-                        Scanner scanner = new Scanner(url.openStream());
+                        Scanner scanner = new Scanner(response);
 
                         while (scanner.hasNext()) {
                             informationString.append(scanner.nextLine());
