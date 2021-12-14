@@ -127,7 +127,7 @@
 
 .saveButton {
     -fx-alignment: bottom-center;
-    -fx-pref-width: 50;
+    -fx-pref-width: 200;
     -fx-pref-height: 30;
     -fx-font-size: 16;
     -fx-background-color: -search-button-color;

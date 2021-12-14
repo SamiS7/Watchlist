@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
@@ -73,43 +74,45 @@ public class SearchPage extends VBox {
     }
 
     private JsonObject request(String urlStr) {
-        Task<JsonObject> task = new Task<JsonObject>() {
+        /*Task<JsonObject> task = new Task<JsonObject>() {
             @Override
-            protected JsonObject call() throws Exception {
-                try {
-                    URL url = new URL(urlStr);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.connect();
-                    int responseCode = conn.getResponseCode();
+            protected JsonObject call() throws Exception {*/
+        try {
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responseCode = conn.getResponseCode();
 
-                    if (responseCode != 200) {
-                        return null;
-                    }
-                    {
-                        StringBuilder informationString = new StringBuilder();
-                        Scanner scanner = new Scanner(url.openStream());
+            InputStream response = conn.getInputStream();
 
-                        while (scanner.hasNext()) {
-                            informationString.append(scanner.nextLine());
-                        }
-                        scanner.close();
-                        return JsonParser.parseString(String.valueOf(informationString)).getAsJsonObject();
-
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            if (responseCode != 200) {
                 return null;
+            } else
+            {
+                StringBuilder informationString = new StringBuilder();
+                Scanner scanner = new Scanner(response);
+
+                while (scanner.hasNext()) {
+                    informationString.append(scanner.nextLine());
+                }
+                scanner.close();
+                return JsonParser.parseString(String.valueOf(informationString)).getAsJsonObject();
+
+
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+            /*}
         };
 
         Thread th = new Thread(task);
         th.setDaemon(true);
         th.start();
 
-        return task.getValue();
+        return task.getValue();*/
     }
 
     private void showMovieDetail(String pId) {
