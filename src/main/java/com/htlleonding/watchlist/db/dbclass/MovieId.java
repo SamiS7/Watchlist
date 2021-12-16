@@ -12,25 +12,18 @@ public class MovieId implements Serializable {
 
     public MovieId() {
     }
-    public MovieId(int accountId, String movieId) {
+
+    public MovieId(Integer accountId, String movieId) {
         this.accountId = accountId;
         this.movieId = movieId;
     }
 
-    public int getAccountId() {
+    public Integer getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(int accountId) {
+    public void setAccountId(Integer accountId) {
         this.accountId = accountId;
-    }
-
-    public String getMovieId() {
-        return movieId;
-    }
-
-    public void setMovieId(String movieId) {
-        this.movieId = movieId;
     }
 
     @Override

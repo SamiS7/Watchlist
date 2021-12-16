@@ -53,7 +53,7 @@ public class Main extends Application {
             }
         });
 
-        //HomePage homePage = new HomePage();
+        HomePage homePage = new HomePage();
         currentPage = new SearchPage();
 
         homeB.setOnAction(actionEvent -> {

@@ -7,10 +7,6 @@
     <persistence-unit name="java">
 
     	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    	<class>com.htlleonding.watchlist.db.dbclass.MovieInfos</class>
-        <class>com.htlleonding.watchlist.db.dbclass.MovieId</class>
-        <class>com.htlleonding.watchlist.db.dbclass.Account</class>
-        <class>com.htlleonding.watchlist.db.dbclass.SavedMovie</class>
 
 
         <properties>
@@ -23,7 +19,7 @@
             <property name="hibernate.hbm2ddl.auto" value="update" />
             <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.format_sql" value="false" />
-            <property name="hibernate.default_schema" value="public"/>
+            <property name="hibernate.default_schema" value="sew"/>
         </properties>
     </persistence-unit>
 </persistence>
