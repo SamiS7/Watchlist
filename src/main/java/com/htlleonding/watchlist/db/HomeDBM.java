@@ -34,24 +34,24 @@ public class HomeDBM {
 
 
     public List<Poster> getShortlyAdded(int id, int limit) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.modieId.movieId) where sm.accountId = :aId order by sm.time desc");
+        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId order by sm.time desc");
         query.setParameter("aId", id);
 
         return getPosterData(query.getResultStream().limit(limit).toList());
     }
 
     public List<Poster> getWatchlist(int userId) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.modieId.movieId) where sm.accountId = :aId");
+        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId");
         return getPosterData(query.getResultList());
     }
 
     public List<Poster> getWatchedMovies(int userId, int limit) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.modieId.movieId) where sm.accountId = :aId and sm.seen");
+        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId and sm.seen");
         return getPosterData(query.getResultStream().limit(limit).toList());
     }
 
     public List<Poster> getNotWatchedMovies(int userId, int limit) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.modieId.movieId) where sm.accountId = :aId and not sm.seen");
+        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId and not sm.seen");
         return getPosterData(query.getResultStream().limit(limit).toList());
     }
 

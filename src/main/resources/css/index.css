@@ -55,12 +55,12 @@
 
 }
 
-.content {
+.content, .scrollPane {
     -fx-pref-width: 2000;
     -fx-pref-height: 1500;
     -fx-background-color: #6e6e6e;
     -fx-background-color: -body-bgc;
-    -fx-padding: 5;
+    -fx-padding: 10;
 }
 
 .content > .tilePane {
@@ -91,7 +91,7 @@
     -fx-background-color: -search-button-color;
 }
 
-.scrollbar, .scrollbar > .viewport {
+.scrollPane, .scrollPane > .viewport {
     -fx-background-color: -body-bgc;
 }
 
@@ -107,6 +107,7 @@
 
 .leftVB {
     -fx-spacing: 10;
+    -fx-pref-width: 600;
 }
 
 .borderpane .label {
@@ -118,6 +119,7 @@
 .borderpane .title {
     -fx-font-size: 30;
     -fx-alignment: top-center;
+    -fx-padding: 0 0 20 0;
 }
 
 .plot {
@@ -125,10 +127,18 @@
     -fx-padding: 0 0 100 0;
 }
 
-.saveButton {
+.saveButton, .trailerButton {
     -fx-alignment: bottom-center;
     -fx-pref-width: 150;
     -fx-pref-height: 30;
     -fx-font-size: 16;
     -fx-background-color: -search-button-color;
+}
+
+.trailerButton {
+    -fx-pref-width: 200;
+}
+
+.seenCheckBox {
+    -fx-text-fill: -body-font-color;
 }

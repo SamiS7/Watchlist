@@ -53,15 +53,16 @@ public class Main extends Application {
             }
         });
 
-        //HomePage homePage = new HomePage();
-        currentPage = new SearchPage();
+        HomePage homePage = null;
+        SearchPage searchPage = new SearchPage("game", root);
+        currentPage = searchPage;
 
         homeB.setOnAction(actionEvent -> {
-            currentPage = new HomePage();
+            currentPage = homePage == null ? new HomePage() : homePage;
             root.getChildren().setAll(menu, currentPage);
         });
         searchB.setOnAction(actionEvent -> {
-            currentPage = new SearchPage();
+            currentPage = searchPage == null ? new SearchPage() : searchPage;
             root.getChildren().setAll(menu, currentPage);
         });
 

@@ -7,10 +7,9 @@ import com.htlleonding.watchlist.ui.components.MovieInfoForImdbU;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -18,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
@@ -27,9 +27,19 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 
 public class SearchPage extends VBox {
+    private ScrollPane scrollPane;
+    private String searchStr;
+    private Node root;
 
     public SearchPage() {
         initSearchBox();
+    }
+
+    public SearchPage(String searchStr, Node root) {
+        this.searchStr = searchStr;
+        this.root = root;
+        initSearchBox();
+
     }
 
     public void initSearchBox() {
@@ -43,48 +53,83 @@ public class SearchPage extends VBox {
         this.getStyleClass().add("content");
         this.setSpacing(20);
 
+        scrollPane = new ScrollPane();
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setFitToWidth(true);
+        scrollPane.getStyleClass().add("scrollPane");
+        this.getChildren().add(scrollPane);
+
         button.setOnAction(actionEvent -> {
-            String searchStr = textField.getText();
+            this.searchStr = textField.getText();
             if (searchStr.length() > 0) {
-                ScrollPane scrollPane = new ScrollPane(search(searchStr));
-                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-                scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                scrollPane.setFitToWidth(true);
-                scrollPane.getStyleClass().add("scrollbar");
-                this.getChildren().add(scrollPane);
+                scrollPane.setContent(search());
             }
         });
 
-
+        if (searchStr != null) {
+            textField.setText(searchStr);
+            button.fireEvent(new ActionEvent());
+        }
     }
 
-    public TilePane search(String searchWord) {
+    public TilePane search() {
         TilePane tilePane = new TilePane();
         tilePane.setVgap(10);
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
 
-        //JsonObject jsonObject = request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchWord);
-        JsonObject jsonObject = request("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchWord);
-        //for (JsonElement j : jsonObject.getAsJsonArray("results")) {
-        for (JsonElement j : jsonObject.getAsJsonArray("titles")) {
-            Image poster = new Image(((JsonObject) j).get("image").getAsString());
-            ImageView imageView = new ImageView(poster);
-            imageView.setFitWidth(100 * 2.36);
-            imageView.setFitHeight(100 * 3.21);
-            Button button = new Button();
-            button.setGraphic(imageView);
-            tilePane.getChildren().add(button);
+        //Task<JsonObject> taskJson = request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
+        Task<JsonObject> taskJson = requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
 
-            button.setOnAction(actionEvent -> {
-                showMovieDetail(((JsonObject) j).get("id").getAsString());
-            });
-        }
+        taskJson.setOnSucceeded(action -> {
+            Task task = new Task() {
+                @Override
+                protected Object call() throws Exception {
+                    try {
+                        //for (JsonElement j : taskJson.get().getAsJsonArray("results")) {
+                        for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
+                            Image poster = new Image(((JsonObject) j).get("image").getAsString());
+                            ImageView imageView = new ImageView(poster);
+
+                            double w = tilePane.getWidth() / 236;
+                             w = (tilePane.getWidth() - (20 * w)) / 236;
+                            double ww = ((tilePane.getWidth() - (20 * 3)) / Math.round(w)) - 10;
+                            double dh = (ww - 236) * 1.36;
+
+                            imageView.setFitWidth(ww);
+                            imageView.setFitHeight(100 * 3.21 + dh);
+                            Button button = new Button();
+                            button.setGraphic(imageView);
+                            button.setBackground(null);
+                            button.setOnAction(actionEvent -> {
+                                showMovieDetail(((JsonObject) j).get("id").getAsString());
+                            });
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tilePane.getChildren().add(button);
+                                }
+                            });
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    return 1;
+                }
+            };
+
+            Thread th = new Thread(task);
+            th.setDaemon(true);
+            th.start();
+        });
         return tilePane;
     }
 
-    private JsonObject request(String urlStr) {
-        /*
+    private Task<JsonObject> request(String urlStr) {
+
         Task<JsonObject> task = new Task<JsonObject>() {
             @Override
             protected JsonObject call() throws Exception {
@@ -95,12 +140,11 @@ public class SearchPage extends VBox {
                     conn.connect();
                     int responseCode = conn.getResponseCode();
 
-                   InputStream response = conn.getInputStream();
+                    InputStream response = conn.getInputStream();
 
                     if (responseCode != 200) {
                         return null;
-                    } else 
-                    {
+                    } else {
                         StringBuilder informationString = new StringBuilder();
                         Scanner scanner = new Scanner(response);
 
@@ -109,7 +153,7 @@ public class SearchPage extends VBox {
                         }
                         scanner.close();
 
-                       return JsonParser.parseString(String.valueOf(informationString)).getAsJsonObject();
+                        return JsonParser.parseString(String.valueOf(informationString)).getAsJsonObject();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -121,32 +165,34 @@ public class SearchPage extends VBox {
         Thread th = new Thread(task);
         th.setDaemon(true);
         th.start();
+        return task;
 
-        try {
-            return task.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-         */
-
-        return requestWithRapidApi(urlStr);
+        //return requestWithRapidApi(urlStr);
     }
 
-    private JsonObject requestWithRapidApi(String urlStr) {
-        try {
-            HttpResponse<String> response = Unirest.get(urlStr)
-                    .header("x-rapidapi-host", "imdb-internet-movie-database-unofficial.p.rapidapi.com")
-                    .header("x-rapidapi-key", "afa7f04a6dmshf059dfa93a77e3fp188a98jsna20ee4c9b5c7")
-                    .asString();
-            //return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
-            return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private Task<JsonObject> requestWithRapidApi(String urlStr) {
+        Task<JsonObject> task = new Task<JsonObject>() {
+            @Override
+            protected JsonObject call() throws Exception {
+                try {
+                    HttpResponse<String> response = Unirest.get(urlStr)
+                            .header("x-rapidapi-host", "imdb-internet-movie-database-unofficial.p.rapidapi.com")
+                            .header("x-rapidapi-key", "afa7f04a6dmshf059dfa93a77e3fp188a98jsna20ee4c9b5c7")
+                            .asString();
+                    //return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
+                    return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
+                } catch (UnirestException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+
+
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
+        return task;
     }
 
     private <T> T asMovieInfo(JsonObject jsonObject, Class<T> classOfT) {
@@ -154,15 +200,39 @@ public class SearchPage extends VBox {
     }
 
     private void showMovieDetail(String pId) {
-        //JsonObject jo = request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
-        JsonObject jo = request("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
+        //Task<JsonObject> jo = request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
 
-        //MovieInfoForImdbO m = asMovieInfo(jo, MovieInfoForImdbO.class);
-        MovieInfoForImdbU m = asMovieInfo(jo, MovieInfoForImdbU.class);
-        MovieDetail movieDetail = new MovieDetail(convertToMovieInfo(m));
-        this.getChildren().setAll(movieDetail);
+        Task<JsonObject> jo = requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
+
+
+        jo.setOnSucceeded(action -> {
+            //MovieInfoForImdbO m = asMovieInfo(jo, MovieInfoForImdbO.class);
+           /*
+            MovieInfoForImdbO m = null;
+            try {
+                m = asMovieInfo(jo.get(), MovieInfoForImdbO.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
+
+            MovieInfoForImdbU m = null;
+            try {
+                m = asMovieInfo(jo.get(), MovieInfoForImdbU.class);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+
+            MovieDetail movieDetail = new MovieDetail(convertToMovieInfo(m), this.getWidth(), this.getHeight());
+
+            ((HBox) root).getChildren().remove(this);
+            ((HBox) root).getChildren().add(movieDetail);
+
+        });
     }
-    
+
     private MovieInfos convertToMovieInfo(Object o) {
         if (o instanceof MovieInfoForImdbO m) {
             return new MovieInfos(m.getId(), m.getTitle(), m.getYear(), m.getPlot(), m.getType(), m.getGenres(),
@@ -172,5 +242,13 @@ public class SearchPage extends VBox {
                     null, m.getPoster(), m.getTrailer().getLink(), m.getTrailer().getThumbnailUrl(), m.getRating());
         }
         return null;
+    }
+
+    public String getSearchStr() {
+        return searchStr;
+    }
+
+    public void setSearchStr(String searchStr) {
+        this.searchStr = searchStr;
     }
 }
