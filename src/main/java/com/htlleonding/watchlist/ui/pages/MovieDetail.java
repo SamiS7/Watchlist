@@ -5,19 +5,35 @@ import com.htlleonding.watchlist.db.DAO;
 import com.htlleonding.watchlist.db.dbclass.MovieInfos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+
+import java.io.File;
+
 
 public class MovieDetail extends BorderPane {
     private MovieInfos movieInfos;
     private boolean isSaved = false;
+    private double contentWidth;
+    private double contentHeight;
 
-    public MovieDetail(MovieInfos movieInfos) {
+    public MovieDetail(MovieInfos movieInfos, double contentWidth, double contentHeight) {
         this.movieInfos = movieInfos;
-        initContent();
+        this.contentWidth = contentWidth;
+        this.contentHeight = contentHeight;
+
+        Media media = new Media(new File("/home/sami/Downloads/10.mp4").toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setAutoPlay(true);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        this.setCenter(mediaView);
+        //initContent();
     }
 
     public void initContent() {
@@ -25,7 +41,6 @@ public class MovieDetail extends BorderPane {
         this.getStyleClass().add("content");
         VBox vb1 = new VBox();
         vb1.getStyleClass().add("leftVB");
-        VBox vb2 = new VBox();
         this.getStyleClass().add("borderpane");
 
         Label title = new Label(movieInfos.getTitle());
@@ -37,25 +52,47 @@ public class MovieDetail extends BorderPane {
         Label genre = new Label(movieInfos.getGenres());
         Label rating = new Label(movieInfos.getImdbRatin() + "");
         Label year = new Label("Jahr: " + movieInfos.getYear());
+
         String bStr = !isSaved ? "Hinzufügen": "Löschen";
+        HBox hb = new HBox();
         Button saveForLater = new Button(bStr);
+        Button trailerB = new Button("Trailer anschauen");
+        CheckBox seenCheckBox = new CheckBox("Schon gesehen");
+        hb.getChildren().addAll(saveForLater, seenCheckBox, trailerB);
+        hb.setAlignment(Pos.CENTER);
+        hb.setSpacing(20);
         saveForLater.getStyleClass().add("saveButton");
+        trailerB.getStyleClass().add("trailerButton");
+        seenCheckBox.getStyleClass().add("seenCheckBox");
+
         saveForLater.setOnAction(actionEvent -> {
             //saveOrDelete();
         });
 
-        vb1.getChildren().addAll(plot, cast, genre, rating, year);
+        trailerB.setOnAction(actionEvent -> {
+            var children = this.getChildren();
+            Media media = new Media(movieInfos.getTrailerUrl());
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setAutoPlay(true);
+            MediaView mediaView = new MediaView(mediaPlayer);
+            this.setCenter(mediaView);
+        });
 
+        vb1.getChildren().addAll(plot, cast, genre, rating, year);
 
         this.setTop(title);
 
         this.setLeft(vb1);
 
-        this.setBottom(saveForLater);
+        this.setBottom(hb);
 
         Image image = new Image(movieInfos.getPosterUrl());
         ImageView iv = new ImageView(image);
-        iv.prefHeight(1500);
+        iv.setFitHeight(this.contentHeight - 150);
+        iv.fitWidthProperty().bind(iv.fitHeightProperty().multiply(0.735));
+        iv.resize(300,300);
+        iv.prefWidth(500);
+        iv.prefHeight(600);
         this.setRight(iv);
 
         BorderPane.setAlignment(title, Pos.TOP_CENTER);

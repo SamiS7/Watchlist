@@ -1,5 +1,6 @@
 module com.htlleonding.watchlist {
     requires javafx.controls;
+    requires javafx.media;
     requires jakarta.persistence;
     requires com.google.gson;
     requires unirest.java;
