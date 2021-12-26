@@ -10,35 +10,28 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
+import javafx.scene.web.WebView;
 
-import java.io.File;
-
-
-public class MovieDetail extends BorderPane {
+public class MovieDetail extends StackPane {
     private MovieInfos movieInfos;
     private boolean isSaved = false;
     private double contentWidth;
     private double contentHeight;
+    private BorderPane borderPane;
 
     public MovieDetail(MovieInfos movieInfos, double contentWidth, double contentHeight) {
         this.movieInfos = movieInfos;
         this.contentWidth = contentWidth;
         this.contentHeight = contentHeight;
-
-        Media media = new Media(new File("/home/sami/Downloads/10.mp4").toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setAutoPlay(true);
-        MediaView mediaView = new MediaView(mediaPlayer);
-        this.setCenter(mediaView);
-        //initContent();
+        initContent();
     }
 
     public void initContent() {
         //isSaved = saved();
+        borderPane = new BorderPane();
         this.getStyleClass().add("content");
+        this.getChildren().add(borderPane);
+        borderPane.getStyleClass().add("content");
         VBox vb1 = new VBox();
         vb1.getStyleClass().add("leftVB");
         this.getStyleClass().add("borderpane");
@@ -70,21 +63,40 @@ public class MovieDetail extends BorderPane {
         });
 
         trailerB.setOnAction(actionEvent -> {
-            var children = this.getChildren();
-            Media media = new Media(movieInfos.getTrailerUrl());
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setAutoPlay(true);
-            MediaView mediaView = new MediaView(mediaPlayer);
-            this.setCenter(mediaView);
+            VBox trailerVB = new VBox();
+            trailerVB.setMaxSize(900, 600);
+            WebView webView = new WebView();
+            this.getStyleClass().add("content");
+            webView.getEngine().load(movieInfos.getTrailerUrl());
+            webView.getEngine().setUserStyleSheetLocation(getClass().getResource("/css/webView.css").toString());
+
+            Button clearButton = new Button("X");
+            clearButton.setStyle("-fx-background-color: #000000; -fx-text-fill: white;");
+            HBox hBox = new HBox(clearButton);
+            hBox.setPrefSize(900, 20);
+            hBox.setAlignment(Pos.CENTER_RIGHT);
+
+            trailerVB.getChildren().addAll(hBox, webView);
+
+            HBox overlay = new HBox();
+            overlay.setPrefSize(2000,2000);
+            overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6)");
+            overlay.setAlignment(Pos.CENTER);
+            overlay.getChildren().add(trailerVB);
+            this.getChildren().add(overlay);
+
+            clearButton.setOnAction(action -> {
+                this.getChildren().remove(overlay);
+            });
         });
 
         vb1.getChildren().addAll(plot, cast, genre, rating, year);
 
-        this.setTop(title);
+        borderPane.setTop(title);
 
-        this.setLeft(vb1);
+        borderPane.setLeft(vb1);
 
-        this.setBottom(hb);
+        borderPane.setBottom(hb);
 
         Image image = new Image(movieInfos.getPosterUrl());
         ImageView iv = new ImageView(image);
@@ -93,7 +105,7 @@ public class MovieDetail extends BorderPane {
         iv.resize(300,300);
         iv.prefWidth(500);
         iv.prefHeight(600);
-        this.setRight(iv);
+        borderPane.setRight(iv);
 
         BorderPane.setAlignment(title, Pos.TOP_CENTER);
         BorderPane.setAlignment(vb1, Pos.CENTER_LEFT);

@@ -66,7 +66,7 @@ public class Main extends Application {
             root.getChildren().setAll(menu, currentPage);
         });
 
-        root.getStylesheets().add(getClass().getResource("/css/index.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         root.getChildren().addAll(menu, currentPage);
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);

@@ -17,10 +17,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -87,15 +83,15 @@ public class SearchPage extends VBox {
                 @Override
                 protected Object call() throws Exception {
                     try {
+                        double w = tilePane.getWidth() / 236;
+                        w = (tilePane.getWidth() - (25 * w)) / 236;
+                        double ww = ((tilePane.getWidth() - (25 * w)) / Math.round(w)) - 10;
+                        double dh = (ww - 236) * 1.36;
+
                         //for (JsonElement j : taskJson.get().getAsJsonArray("results")) {
                         for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
                             Image poster = new Image(((JsonObject) j).get("image").getAsString());
                             ImageView imageView = new ImageView(poster);
-
-                            double w = tilePane.getWidth() / 236;
-                             w = (tilePane.getWidth() - (20 * w)) / 236;
-                            double ww = ((tilePane.getWidth() - (20 * 3)) / Math.round(w)) - 10;
-                            double dh = (ww - 236) * 1.36;
 
                             imageView.setFitWidth(ww);
                             imageView.setFitHeight(100 * 3.21 + dh);
@@ -134,27 +130,8 @@ public class SearchPage extends VBox {
             @Override
             protected JsonObject call() throws Exception {
                 try {
-                    URL url = new URL(urlStr);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.connect();
-                    int responseCode = conn.getResponseCode();
-
-                    InputStream response = conn.getInputStream();
-
-                    if (responseCode != 200) {
-                        return null;
-                    } else {
-                        StringBuilder informationString = new StringBuilder();
-                        Scanner scanner = new Scanner(response);
-
-                        while (scanner.hasNext()) {
-                            informationString.append(scanner.nextLine());
-                        }
-                        scanner.close();
-
-                        return JsonParser.parseString(String.valueOf(informationString)).getAsJsonObject();
-                    }
+                    HttpResponse response = Unirest.get(urlStr).asString();
+                    return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -166,8 +143,6 @@ public class SearchPage extends VBox {
         th.setDaemon(true);
         th.start();
         return task;
-
-        //return requestWithRapidApi(urlStr);
     }
 
     private Task<JsonObject> requestWithRapidApi(String urlStr) {
@@ -179,7 +154,6 @@ public class SearchPage extends VBox {
                             .header("x-rapidapi-host", "imdb-internet-movie-database-unofficial.p.rapidapi.com")
                             .header("x-rapidapi-key", "afa7f04a6dmshf059dfa93a77e3fp188a98jsna20ee4c9b5c7")
                             .asString();
-                    //return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
                     return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
                 } catch (UnirestException e) {
                     e.printStackTrace();
@@ -206,14 +180,15 @@ public class SearchPage extends VBox {
 
 
         jo.setOnSucceeded(action -> {
-            //MovieInfoForImdbO m = asMovieInfo(jo, MovieInfoForImdbO.class);
-           /*
+
+            /*
             MovieInfoForImdbO m = null;
             try {
                 m = asMovieInfo(jo.get(), MovieInfoForImdbO.class);
             } catch (Exception e) {
                 e.printStackTrace();
-            }*/
+            }
+             */
 
             MovieInfoForImdbU m = null;
             try {
@@ -223,7 +198,6 @@ public class SearchPage extends VBox {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-
 
             MovieDetail movieDetail = new MovieDetail(convertToMovieInfo(m), this.getWidth(), this.getHeight());
 
@@ -236,10 +210,11 @@ public class SearchPage extends VBox {
     private MovieInfos convertToMovieInfo(Object o) {
         if (o instanceof MovieInfoForImdbO m) {
             return new MovieInfos(m.getId(), m.getTitle(), m.getYear(), m.getPlot(), m.getType(), m.getGenres(),
-                    m.getStars(), m.getImage(), m.getTrailer().getLink(), m.getTrailer().getThumbnailUrl(), m.getImDbRatin());
+                    m.getStars(), m.getImage(), m.getTrailer().getLinkEmbed(), m.getTrailer().getThumbnailUrl(), m.getImDbRatin());
         } else if (o instanceof MovieInfoForImdbU m) {
             return new MovieInfos(m.getId(), m.getTitle(), m.getYear(), m.getPlot(), null, null,
-                    null, m.getPoster(), m.getTrailer().getLink(), m.getTrailer().getThumbnailUrl(), m.getRating());
+                    null, m.getPoster(), "https://www.imdb.com/video/imdb/" + m.getTrailer().getId() + "/imdb/embed",
+                    null, m.getRating());
         }
         return null;
     }

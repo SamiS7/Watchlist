@@ -19,11 +19,11 @@ public class MovieInfoForImdbO {
     }
 
     public class Trailer {
-       private String thumbnailUrl, link;
+       private String thumbnailUrl, linkEmbed;
 
-        public Trailer(String thumbnailUrl, String link) {
+        public Trailer(String thumbnailUrl, String linkEmbed) {
             this.thumbnailUrl = thumbnailUrl;
-            this.link = link;
+            this.linkEmbed = linkEmbed;
         }
 
         public String getThumbnailUrl() {
@@ -34,12 +34,12 @@ public class MovieInfoForImdbO {
             this.thumbnailUrl = thumbnailUrl;
         }
 
-        public String getLink() {
-            return link;
+        public String getLinkEmbed() {
+            return linkEmbed;
         }
 
-        public void setLink(String link) {
-            this.link = link;
+        public void setLinkEmbed(String linkEmbed) {
+            this.linkEmbed = linkEmbed;
         }
     }
 

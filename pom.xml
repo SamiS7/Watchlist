@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-media</artifactId>
+            <artifactId>javafx-web</artifactId>
             <version>18-ea+8</version>
         </dependency>
 

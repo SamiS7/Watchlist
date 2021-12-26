@@ -2,10 +2,10 @@ package com.htlleonding.watchlist.ui.components;
 
 public class MovieInfoForImdbU {
     private String id, title, year, plot, poster;
-    private MovieInfoForImdbO.Trailer trailer;
+    private Trailer trailer;
     private double rating;
 
-    public MovieInfoForImdbU(String id, String title, String year, String plot, String poster, MovieInfoForImdbO.Trailer trailer, double rating) {
+    public MovieInfoForImdbU(String id, String title, String year, String plot, String poster, Trailer trailer, double rating) {
         this.id = id;
         this.title = title;
         this.year = year;
@@ -16,18 +16,18 @@ public class MovieInfoForImdbU {
     }
 
     public class Trailer {
-        private String link;
+        private String id;
 
-        public Trailer(String link) {
-            this.link = link;
+        public Trailer(String id) {
+            this.id = id;
         }
 
-        public String getLink() {
-            return link;
+        public String getId() {
+            return id;
         }
 
-        public void setLink(String link) {
-            this.link = link;
+        public void setId(String id) {
+            this.id = id;
         }
     }
 
@@ -71,11 +71,11 @@ public class MovieInfoForImdbU {
         this.poster = poster;
     }
 
-    public MovieInfoForImdbO.Trailer getTrailer() {
+    public Trailer getTrailer() {
         return trailer;
     }
 
-    public void setTrailer(MovieInfoForImdbO.Trailer trailer) {
+    public void setTrailer(Trailer trailer) {
         this.trailer = trailer;
     }
 
