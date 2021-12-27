@@ -20,13 +20,11 @@ public class MovieDetail extends StackPane {
     private MovieInfos movieInfos;
     private boolean isSaved = false;
     private double contentWidth;
-    private double contentHeight;
     private BorderPane borderPane;
 
-    public MovieDetail(MovieInfos movieInfos, double contentWidth, double contentHeight) {
+    public MovieDetail(MovieInfos movieInfos) {
         this.movieInfos = movieInfos;
         this.contentWidth = contentWidth;
-        this.contentHeight = contentHeight;
         initContent();
     }
 
@@ -47,10 +45,10 @@ public class MovieDetail extends StackPane {
         plot.getStyleClass().add("plot");
         Label cast = new Label("Schauspieler: " + movieInfos.getStars());
         Label genre = new Label(movieInfos.getGenres());
-        Label rating = new Label(movieInfos.getImdbRatin() + "");
+        Label rating = new Label("IMDB Bewertung: " + movieInfos.getImdbRatin());
         Label year = new Label("Jahr: " + movieInfos.getYear());
 
-        String bStr = !isSaved ? "Hinzufügen" : "Löschen";
+        String bStr = !isSaved ? "Speichern" : "Löschen";
         HBox hb = new HBox();
         Button saveForLater = new Button(bStr);
         Button trailerB = new Button("Trailer anschauen");
@@ -115,6 +113,7 @@ public class MovieDetail extends StackPane {
         });
 
         vb1.getChildren().addAll(plot, cast, genre, rating, year);
+        vb1.prefWidthProperty().bind(this.widthProperty().multiply(0.4));
 
         borderPane.setTop(title);
 
@@ -124,11 +123,8 @@ public class MovieDetail extends StackPane {
 
         Image image = new Image(movieInfos.getPosterUrl());
         ImageView iv = new ImageView(image);
-        iv.setFitHeight(this.contentHeight - 150);
-        iv.fitWidthProperty().bind(iv.fitHeightProperty().multiply(0.735));
-        iv.resize(300, 300);
-        iv.prefWidth(500);
-        iv.prefHeight(600);
+        iv.setPreserveRatio(true);
+        iv.fitWidthProperty().bind(vb1.heightProperty().multiply(0.65));
         borderPane.setRight(iv);
 
         BorderPane.setAlignment(title, Pos.TOP_CENTER);

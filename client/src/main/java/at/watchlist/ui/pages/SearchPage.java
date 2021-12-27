@@ -20,6 +20,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -35,6 +36,11 @@ public class SearchPage extends VBox {
         initSearchBox();
     }
 
+    public SearchPage(Node root) {
+        this();
+        this.root = root;
+    }
+
     public SearchPage(String searchStr, Node root) {
         this.searchStr = searchStr;
         this.root = root;
@@ -47,8 +53,16 @@ public class SearchPage extends VBox {
         hb.getStyleClass().add("searchBox");
         TextField textField = new TextField();
         textField.setPromptText("Suchen ...");
+
         Button button = new Button("Suchen");
         hb.getChildren().addAll(textField, button);
+
+        textField.setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.ENTER)) {
+                button.fireEvent(new ActionEvent());
+            }
+        });
+
         this.getChildren().add(hb);
         this.getStyleClass().add("content");
         this.setSpacing(20);
@@ -79,8 +93,8 @@ public class SearchPage extends VBox {
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
 
-        //Task<JsonObject> taskJson = request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
-        Task<JsonObject> taskJson = requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
+        Task<JsonObject> taskJson = request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
+        //Task<JsonObject> taskJson = requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
 
         taskJson.setOnSucceeded(action -> {
             Task task = new Task() {
@@ -92,8 +106,8 @@ public class SearchPage extends VBox {
                         double ww = ((tilePane.getWidth() - (25 * w)) / Math.round(w)) - 10;
                         double dh = (ww - 236) * 1.36;
 
-                        //for (JsonElement j : taskJson.get().getAsJsonArray("results")) {
-                        for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
+                        for (JsonElement j : taskJson.get().getAsJsonArray("results")) {
+                        //for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
                             Image poster = new Image(((JsonObject) j).get("image").getAsString());
                             ImageView imageView = new ImageView(poster);
 
@@ -178,22 +192,22 @@ public class SearchPage extends VBox {
     }
 
     private void showMovieDetail(String pId) {
-        //Task<JsonObject> jo = request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
+        Task<JsonObject> jo = request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
 
-        Task<JsonObject> jo = requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
+        //Task<JsonObject> jo = requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
 
 
         jo.setOnSucceeded(action -> {
 
-            /*
+
             MovieInfoForImdbO m = null;
             try {
                 m = asMovieInfo(jo.get(), MovieInfoForImdbO.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-             */
 
+            /*
             MovieInfoForImdbU m = null;
             try {
                 m = asMovieInfo(jo.get(), MovieInfoForImdbU.class);
@@ -201,9 +215,9 @@ public class SearchPage extends VBox {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
-            }
+            }*/
 
-            MovieDetail movieDetail = new MovieDetail(convertToMovieInfo(m), this.getWidth(), this.getHeight());
+            MovieDetail movieDetail = new MovieDetail(convertToMovieInfo(m));
 
             ((HBox) root).getChildren().remove(this);
             ((HBox) root).getChildren().add(movieDetail);

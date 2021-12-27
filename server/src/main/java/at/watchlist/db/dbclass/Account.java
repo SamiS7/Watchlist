@@ -1,47 +1,57 @@
 package at.watchlist.db.dbclass;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 public class Account {
     @Id
-    @GeneratedValue
-    private Integer id;
-    private String firstName;
-    private String lastName;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String username;
+    private String password;
+    @OneToMany
+    List<MovieInfos> movies = new LinkedList<>();
 
     public Account() {
     }
 
-    public Account(Integer id, String firstName, String lastName) {
+    public Account(Long id, String username, String password) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
     }
 
-    public Integer getId() {
+    public List<MovieInfos> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<MovieInfos> movies) {
+        this.movies = movies;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getPassword() {
+        return password;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
