@@ -6,8 +6,9 @@
     -menu-font-color: #dadada;
     -menu-width: 400;
     -menu-button-height: 30;
-    -textFied-color: #606060;
+    -textField-color: #606060;
     -search-button-color: #0077ff;
+    -profile-menu-color: #333333;
 }
 
 .root {
@@ -36,8 +37,13 @@
     -fx-font-weight: 600;
     -fx-pref-width: -menu-width;
     -fx-pref-height: -menu-button-height;
-    -fx-padding: 20 0 20 8;
+    -fx-padding: 15 0 15 8;
     -fx-alignment: center-left;
+}
+
+.menu .profileB {
+    -fx-alignment: center;
+    -fx-padding: 0;
 }
 
 .menu .button:hover {
@@ -54,6 +60,34 @@
 .menu .menuIcon:hover .menuIV {
     -fx-scale-x: 1.1;
 
+}
+
+.profileMenu {
+    -fx-background-color: -profile-menu-color;
+    -fx-max-height: 300;
+    -fx-max-width: 220;
+    -fx-pref-height: 10;
+    -fx-border-width: 3;
+    -fx-border-color: -textField-color;
+    -fx-border-style: solid;
+}
+
+.profileMenu * {
+    -fx-font-size: 16;
+    -fx-background-color: none;
+    -fx-text-fill: -body-font-color;
+    -fx-pref-width: 300;
+    -fx-alignment: center-left;
+}
+
+.profileMenu .button:hover {
+   -fx-background-color: -body-bgc;
+}
+
+.userName, .password {
+    -fx-max-height: 50;
+    -fx-max-width: 300;
+    -fx-font-size: 20;
 }
 
 .content, .scrollPane {
@@ -84,7 +118,7 @@
 
 .searchBox .text-field {
     -fx-pref-width: 500;
-    -fx-background-color: -textFied-color;
+    -fx-background-color: -textField-color;
 }
 
 .searchBox .button {
@@ -128,7 +162,7 @@
     -fx-padding: 0 0 100 0;
 }
 
-.saveButton, .trailerButton {
+.saveButton, .trailerButton, .logInB, .logInhideB {
     -fx-alignment: bottom-center;
     -fx-pref-width: 150;
     -fx-pref-height: 30;
@@ -144,10 +178,10 @@
     -fx-text-fill: -body-font-color;
 }
 
-.trailerB {
+.trailerB, hideB {
     -fx-background-color: #000000;
     -fx-text-fill: white;
-    -fx-font-size: 30;
+    -fx-font-size: 20;
     -fx-pref-width: 40;
     -fx-pref-height: 40;
 }

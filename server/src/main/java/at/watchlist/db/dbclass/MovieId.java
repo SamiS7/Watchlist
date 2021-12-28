@@ -1,40 +1,51 @@
 package at.watchlist.db.dbclass;
 
 import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
 public class MovieId implements Serializable {
-    private Integer accountId;
-    private String movieId;
+    @ManyToOne
+    private Account account;
+    @ManyToOne
+    private MovieInfos movieInfos;
 
     public MovieId() {
     }
 
-    public MovieId(Integer accountId, String movieId) {
-        this.accountId = accountId;
-        this.movieId = movieId;
+    public MovieId(Account account, MovieInfos movieInfos) {
+        this.account = account;
+        this.movieInfos = movieInfos;
     }
 
-    public Integer getAccountId() {
-        return accountId;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccountId(Integer accountId) {
-        this.accountId = accountId;
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public MovieInfos getMovieInfos() {
+        return movieInfos;
+    }
+
+    public void setMovieInfos(MovieInfos movieInfos) {
+        this.movieInfos = movieInfos;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MovieId movieId1 = (MovieId) o;
-        return accountId.equals(movieId1.accountId) && movieId.equals(movieId1.movieId);
+        MovieId movieId = (MovieId) o;
+        return account.equals(movieId.account) && movieInfos.equals(movieId.movieInfos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountId, movieId);
+        return Objects.hash(account, movieInfos);
     }
 }
