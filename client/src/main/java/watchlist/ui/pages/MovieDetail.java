@@ -1,9 +1,5 @@
-package at.watchlist.ui.pages;
+package watchlist.ui.pages;
 
-import at.watchlist.Main;
-import at.watchlist.forServer.serverClass.MovieInfos;
-import at.watchlist.forServer.serverConn.Insertion;
-import at.watchlist.forServer.serverConn.Selection;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -15,6 +11,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import watchlist.Main;
+import watchlist.forServer.serverClass.MovieInfos;
+import watchlist.forServer.serverConn.Insertion;
+import watchlist.forServer.serverConn.Selection;
 
 public class MovieDetail extends StackPane {
     private MovieInfos movieInfos;

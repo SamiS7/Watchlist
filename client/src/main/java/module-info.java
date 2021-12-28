@@ -4,7 +4,7 @@ module client {
     requires com.google.gson;
     requires unirest.java;
 
-    exports at.watchlist;
-    opens at.watchlist;
-    opens at.watchlist.ui.components;
+    exports watchlist;
+    opens watchlist;
+    opens watchlist.ui.components;
 }

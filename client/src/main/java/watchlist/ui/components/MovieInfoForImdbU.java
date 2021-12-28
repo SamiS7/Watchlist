@@ -1,4 +1,4 @@
-package at.watchlist.ui.components;
+package watchlist.ui.components;
 
 public class MovieInfoForImdbU {
     private String id, title, year, plot, poster;

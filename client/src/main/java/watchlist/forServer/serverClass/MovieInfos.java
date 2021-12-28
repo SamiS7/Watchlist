@@ -1,4 +1,4 @@
-package at.watchlist.forServer.serverClass;
+package watchlist.forServer.serverClass;
 
 public class MovieInfos {
     String id;

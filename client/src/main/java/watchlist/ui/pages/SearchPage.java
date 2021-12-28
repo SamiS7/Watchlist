@@ -1,8 +1,5 @@
-package at.watchlist.ui.pages;
+package watchlist.ui.pages;
 
-import at.watchlist.forServer.serverClass.MovieInfos;
-import at.watchlist.ui.components.MovieInfoForImdbO;
-import at.watchlist.ui.components.MovieInfoForImdbU;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,6 +21,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import watchlist.forServer.serverClass.MovieInfos;
+import watchlist.ui.components.MovieInfoForImdbO;
+import watchlist.ui.components.MovieInfoForImdbU;
 
 import java.util.concurrent.ExecutionException;
 

@@ -1,9 +1,9 @@
-package at.watchlist.ui.pages;
+package watchlist.ui.pages;
 
-import at.watchlist.Main;
-import at.watchlist.enums.ListCategory;
-import at.watchlist.ui.components.MovieRow;
 import javafx.scene.layout.VBox;
+import watchlist.Main;
+import watchlist.enums.ListCategory;
+import watchlist.ui.components.MovieRow;
 
 public class HomePage extends VBox {
     private static int rowLimit = 5;

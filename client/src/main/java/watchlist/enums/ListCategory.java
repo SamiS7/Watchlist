@@ -1,4 +1,4 @@
-package at.watchlist.enums;
+package watchlist.enums;
 
 public enum ListCategory {
     SHORTLY_SAVED("Kürzlich gespeichert"),

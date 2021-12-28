@@ -1,7 +1,5 @@
-package at.watchlist;
+package watchlist;
 
-import at.watchlist.ui.pages.HomePage;
-import at.watchlist.ui.pages.SearchPage;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -13,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import watchlist.ui.pages.HomePage;
+import watchlist.ui.pages.SearchPage;
 
 public class Main extends Application {
     private static Integer userId = 0;

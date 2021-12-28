@@ -1,13 +1,13 @@
-package at.watchlist.ui.components;
+package watchlist.ui.components;
 
-import at.watchlist.forServer.serverClass.Poster;
-import at.watchlist.forServer.serverConn.Selection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import at.watchlist.enums.ListCategory;
+import watchlist.enums.ListCategory;
+import watchlist.forServer.serverClass.Poster;
+import watchlist.forServer.serverConn.Selection;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package at.htl;
+package at.watchlist;
 
 import io.quarkus.test.junit.NativeImageTest;
 

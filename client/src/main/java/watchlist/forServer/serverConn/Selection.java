@@ -1,6 +1,6 @@
-package at.watchlist.forServer.serverConn;
+package watchlist.forServer.serverConn;
 
-import at.watchlist.forServer.serverClass.Poster;
+import watchlist.forServer.serverClass.Poster;
 
 import java.util.List;
 

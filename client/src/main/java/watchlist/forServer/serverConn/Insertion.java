@@ -1,6 +1,6 @@
-package at.watchlist.forServer.serverConn;
+package watchlist.forServer.serverConn;
 
-import at.watchlist.forServer.serverClass.MovieInfos;
+import watchlist.forServer.serverClass.MovieInfos;
 
 public class Insertion {
     private static Insertion insertion;
