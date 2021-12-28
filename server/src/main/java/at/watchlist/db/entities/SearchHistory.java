@@ -1,4 +1,4 @@
-package at.watchlist.db.dbclass;
+package at.watchlist.db.entities;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,17 +9,19 @@ public class SearchHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn()
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
+    private String searchStr;
     private LocalDateTime time;
 
     public SearchHistory() {
     }
 
-    public SearchHistory(Long id, Account account, LocalDateTime time) {
+    public SearchHistory(Account account, String searchStr) {
         this.id = id;
         this.account = account;
-        this.time = time;
+        this.searchStr = searchStr;
+        this.time = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -36,6 +38,14 @@ public class SearchHistory {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public String getSearchStr() {
+        return searchStr;
+    }
+
+    public void setSearchStr(String searchStr) {
+        this.searchStr = searchStr;
     }
 
     public LocalDateTime getTime() {

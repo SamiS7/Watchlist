@@ -1,14 +1,12 @@
 package at.watchlist.db;
 
-import at.watchlist.db.dbclass.MovieInfos;
-import at.watchlist.db.dbclass.SavedMovie;
+import at.watchlist.db.entities.MovieInfos;
+import at.watchlist.db.entities.SavedMovie;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomeDBM {
     private EntityManager entityManager;
@@ -34,35 +32,35 @@ public class HomeDBM {
 
 
     public List<Poster> getShortlyAdded(int id, int limit) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId order by sm.time desc");
+        TypedQuery query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId order by sm.time desc", MovieInfos.class);
         query.setParameter("aId", id);
 
-        return getPosterData(query.getResultStream().limit(limit).toList());
+        return getPosterData(query, limit);
     }
 
     public List<Poster> getWatchlist(int userId) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId");
-        return getPosterData(query.getResultList());
+        TypedQuery query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId", MovieInfos.class);
+        return getPosterData(query, -1);
     }
 
     public List<Poster> getWatchedMovies(int userId, int limit) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId and sm.seen");
-        return getPosterData(query.getResultStream().limit(limit).toList());
+        TypedQuery query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId and sm.seen", MovieInfos.class);
+        return getPosterData(query, limit);
     }
 
     public List<Poster> getNotWatchedMovies(int userId, int limit) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId and not sm.seen");
-        return getPosterData(query.getResultStream().limit(limit).toList());
+        TypedQuery query = entityManager.createQuery("from " + MovieInfos.class.getName() + " mi join " + SavedMovie.class.getName() + " sm on(mi.id = sm.movieId.movieId) where sm.movieId.accountId = :aId and not sm.seen", MovieInfos.class);
+        return getPosterData(query, limit);
     }
 
     public List<Poster> getBestRated(int limit) {
-        Query query = entityManager.createQuery("from " + MovieInfos.class.getName() + " order by rating desc");
-        return getPosterData(query.getResultStream().limit(limit).toList());
+        TypedQuery query = entityManager.createQuery("from " + MovieInfos.class.getName() + " order by rating desc", MovieInfos.class);
+        return getPosterData(query, limit);
     }
 
-    public List<Poster> getPosterData(List<MovieInfos> movieInfos) {
+    public List<Poster> getPosterData(TypedQuery<MovieInfos> query, int limit) {
         List<Poster> list = new LinkedList<>();
-        for(MovieInfos m:movieInfos) {
+        for(MovieInfos m:query.getResultStream().limit(limit).collect(Collectors.toList())) {
             list.add(new Poster(m.getPosterUrl() ,m.getId(), m.getTitle()));
         }
         return list;

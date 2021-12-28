@@ -1,4 +1,4 @@
-package at.watchlist.db.dbclass;
+package at.watchlist.db.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

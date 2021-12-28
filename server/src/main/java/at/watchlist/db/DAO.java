@@ -1,7 +1,7 @@
 package at.watchlist.db;
 
-import at.watchlist.db.dbclass.MovieInfos;
-import at.watchlist.db.dbclass.SavedMovie;
+import at.watchlist.db.entities.MovieInfos;
+import at.watchlist.db.entities.SavedMovie;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -59,6 +59,6 @@ public class DAO {
         query.setParameter("aId", accountId);
         query.setParameter("mId", movieId);
 
-        return query.getResultStream().toList().size() > 0;
+        return query.getResultStream().count() > 0;
     }
 }
