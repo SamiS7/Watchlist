@@ -3,16 +3,13 @@ package watchlist.ui.pages;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -22,6 +19,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import watchlist.forServer.serverClass.MovieInfos;
+import watchlist.request.SyncRequest;
+import watchlist.ui.components.AlertError;
 import watchlist.ui.components.MovieInfoForImdbO;
 import watchlist.ui.components.MovieInfoForImdbU;
 
@@ -84,6 +83,8 @@ public class SearchPage extends VBox {
         if (searchStr != null) {
             textField.setText(searchStr);
             button.fireEvent(new ActionEvent());
+        } else {
+            Platform.runLater(() -> textField.requestFocus());
         }
     }
 
@@ -93,8 +94,8 @@ public class SearchPage extends VBox {
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
 
-        Task<JsonObject> taskJson = request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
-        //Task<JsonObject> taskJson = requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
+        Task<JsonObject> taskJson = SyncRequest.request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
+        //Task<JsonObject> taskJson = SyncRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
 
         taskJson.setOnSucceeded(action -> {
             Task task = new Task() {
@@ -106,29 +107,37 @@ public class SearchPage extends VBox {
                         double ww = ((tilePane.getWidth() - (25 * w)) / Math.round(w)) - 10;
                         double dh = (ww - 236) * 1.36;
 
-                        for (JsonElement j : taskJson.get().getAsJsonArray("results")) {
-                        //for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
-                            Image poster = new Image(((JsonObject) j).get("image").getAsString());
-                            ImageView imageView = new ImageView(poster);
+                        var arr = taskJson.get().getAsJsonArray("results");
+                        if (arr.size() > 0) {
+                            for (JsonElement j : arr) {
+                                //for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
+                                Image poster = new Image(((JsonObject) j).get("image").getAsString());
+                                ImageView imageView = new ImageView(poster);
 
-                            imageView.setFitWidth(ww);
-                            imageView.setFitHeight(100 * 3.21 + dh);
-                            Button button = new Button();
-                            button.setGraphic(imageView);
-                            button.setBackground(null);
-                            button.setOnAction(actionEvent -> {
-                                showMovieDetail(((JsonObject) j).get("id").getAsString());
-                            });
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tilePane.getChildren().add(button);
-                                }
+                                imageView.setFitWidth(ww);
+                                imageView.setFitHeight(100 * 3.21 + dh);
+                                Button button = new Button();
+                                button.setGraphic(imageView);
+                                button.setBackground(null);
+                                button.setOnAction(actionEvent -> {
+                                    showMovieDetail(((JsonObject) j).get("id").getAsString());
+                                });
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tilePane.getChildren().add(button);
+                                    }
+                                });
+                            }
+                        } else {
+                            Label msgL = new Label("Kein Treffer gefunden!");
+                            msgL.getStyleClass().add("msgL");
+                            Platform.runLater(() -> {
+                                tilePane.getChildren().add(msgL);
                             });
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (Exception e) {
+                        new AlertError("Technische Probleme", " Es sind technische Probleme aufgetreten. Versuchen es erneut!");
                         e.printStackTrace();
                     }
                     return 1;
@@ -142,59 +151,14 @@ public class SearchPage extends VBox {
         return tilePane;
     }
 
-    private Task<JsonObject> request(String urlStr) {
-
-        Task<JsonObject> task = new Task<JsonObject>() {
-            @Override
-            protected JsonObject call() throws Exception {
-                try {
-                    HttpResponse response = Unirest.get(urlStr).asString();
-                    return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-
-        Thread th = new Thread(task);
-        th.setDaemon(true);
-        th.start();
-        return task;
-    }
-
-    private Task<JsonObject> requestWithRapidApi(String urlStr) {
-        Task<JsonObject> task = new Task<JsonObject>() {
-            @Override
-            protected JsonObject call() throws Exception {
-                try {
-                    HttpResponse<String> response = Unirest.get(urlStr)
-                            .header("x-rapidapi-host", "imdb-internet-movie-database-unofficial.p.rapidapi.com")
-                            .header("x-rapidapi-key", "afa7f04a6dmshf059dfa93a77e3fp188a98jsna20ee4c9b5c7")
-                            .asString();
-                    return JsonParser.parseString(String.valueOf(response.getBody())).getAsJsonObject();
-                } catch (UnirestException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-
-
-        Thread th = new Thread(task);
-        th.setDaemon(true);
-        th.start();
-        return task;
-    }
-
     private <T> T asMovieInfo(JsonObject jsonObject, Class<T> classOfT) {
         return new Gson().fromJson(jsonObject, classOfT);
     }
 
     private void showMovieDetail(String pId) {
-        Task<JsonObject> jo = request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
+        Task<JsonObject> jo = SyncRequest.request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
 
-        //Task<JsonObject> jo = requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
+        //Task<JsonObject> jo = SyncRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
 
 
         jo.setOnSucceeded(action -> {
@@ -204,6 +168,7 @@ public class SearchPage extends VBox {
             try {
                 m = asMovieInfo(jo.get(), MovieInfoForImdbO.class);
             } catch (Exception e) {
+                new AlertError("Server Probleme", "Die Details des gewünschten Films kann nicht aufgerufen werden!");
                 e.printStackTrace();
             }
 

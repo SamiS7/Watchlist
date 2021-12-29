@@ -1,0 +1,34 @@
+* {
+    -body-bgc: #1c1c1c;
+    -header-bgc: #181818;
+    -body-font-color: #cccccc;
+    -textField-color: #626262;
+}
+
+.root {
+    -fx-background-color: -body-bgc;
+    -fx-text-fill: -body-font-color;
+}
+
+.root .header-panel {
+    -fx-background-color: -header-bgc;
+    -fx-text-fill: -body-font-color;
+}
+
+.root .header-panel * {
+    -fx-font-size: 30;
+    -fx-text-fill: -body-font-color;
+}
+
+.root .text-field {
+    -fx-background-color: -textField-color;
+    -fx-text-fill: -body-font-color;
+}
+
+.userName, .password {
+    -fx-max-height: 50;
+    -fx-max-width: 300;
+    -fx-font-size: 20;
+
+}
+

@@ -65,51 +65,7 @@ public class MovieDetail extends StackPane {
         });
 
         trailerB.setOnAction(actionEvent -> {
-            VBox trailerVB = new VBox();
-            trailerVB.setMaxSize(900, 600);
-            WebView webView = new WebView();
-            this.getStyleClass().add("content");
-            webView.getEngine().load(movieInfos.getTrailerUrl());
-            webView.getEngine().setUserStyleSheetLocation(getClass().getResource("/css/webView.css").toString());
-
-            Button clearButton = new Button("X");
-            clearButton.getStyleClass().add("trailerB");
-            Button biggerB = new Button("+");
-            biggerB.getStyleClass().add("trailerB");
-            Button smallerB = new Button("-");
-            smallerB.getStyleClass().add("trailerB");
-
-            HBox hBox = new HBox(10, smallerB, biggerB, clearButton);
-            hBox.setPrefSize(900, 20);
-            hBox.setAlignment(Pos.CENTER_RIGHT);
-
-            trailerVB.getChildren().addAll(hBox, webView);
-
-            HBox overlay = new HBox();
-            overlay.setPrefSize(2000, 2000);
-            overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6)");
-            overlay.setAlignment(Pos.CENTER);
-            overlay.getChildren().add(trailerVB);
-            this.getChildren().add(overlay);
-
-            clearButton.setOnAction(action -> {
-                this.getChildren().remove(overlay);
-                webView.getEngine().load("");
-            });
-
-            biggerB.setOnAction(actionEvent1 -> {
-                double w = trailerVB.getMaxWidth() + 300;
-                double h = trailerVB.getMaxHeight() + 200;
-                trailerVB.setMaxSize(w, h);
-                webView.setPrefSize(w, h);
-            });
-            smallerB.setOnAction(actionEvent1 -> {
-                double w = trailerVB.getMaxWidth() - 300;
-                double h = trailerVB.getMaxHeight() - 200;
-                trailerVB.setMaxSize(w, h);
-                webView.setPrefSize(w, h);
-            });
-
+            showTrailer();
         });
 
         vb1.getChildren().addAll(plot, cast, genre, rating, year);
@@ -131,6 +87,53 @@ public class MovieDetail extends StackPane {
         BorderPane.setAlignment(vb1, Pos.CENTER_LEFT);
         BorderPane.setAlignment(saveForLater, Pos.BOTTOM_CENTER);
         BorderPane.setAlignment(iv, Pos.TOP_CENTER);
+    }
+
+    public void showTrailer() {
+        VBox trailerVB = new VBox();
+        trailerVB.setMaxSize(900, 600);
+        WebView webView = new WebView();
+        this.getStyleClass().add("content");
+        webView.getEngine().load(movieInfos.getTrailerUrl());
+        webView.getEngine().setUserStyleSheetLocation(getClass().getResource("/css/webView.css").toString());
+
+        Button clearButton = new Button("X");
+        clearButton.getStyleClass().add("trailerB");
+        Button biggerB = new Button("+");
+        biggerB.getStyleClass().add("trailerB");
+        Button smallerB = new Button("-");
+        smallerB.getStyleClass().add("trailerB");
+
+        HBox hBox = new HBox(10, smallerB, biggerB, clearButton);
+        hBox.setPrefSize(900, 20);
+        hBox.setAlignment(Pos.CENTER_RIGHT);
+
+        trailerVB.getChildren().addAll(hBox, webView);
+
+        HBox overlay = new HBox();
+        overlay.setPrefSize(2000, 2000);
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6)");
+        overlay.setAlignment(Pos.CENTER);
+        overlay.getChildren().add(trailerVB);
+        this.getChildren().add(overlay);
+
+        clearButton.setOnAction(action -> {
+            this.getChildren().remove(overlay);
+            webView.getEngine().load("");
+        });
+
+        biggerB.setOnAction(actionEvent1 -> {
+            double w = trailerVB.getMaxWidth() + 300;
+            double h = trailerVB.getMaxHeight() + 200;
+            trailerVB.setMaxSize(w, h);
+            webView.setPrefSize(w, h);
+        });
+        smallerB.setOnAction(actionEvent1 -> {
+            double w = trailerVB.getMaxWidth() - 300;
+            double h = trailerVB.getMaxHeight() - 200;
+            trailerVB.setMaxSize(w, h);
+            webView.setPrefSize(w, h);
+        });
     }
 
     private void saveOrDelete() {

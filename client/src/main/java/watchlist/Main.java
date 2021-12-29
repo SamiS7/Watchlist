@@ -1,6 +1,8 @@
 package watchlist;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -8,27 +10,28 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import watchlist.ui.pages.HomePage;
 import watchlist.ui.pages.SearchPage;
 
+import java.util.List;
+
 public class Main extends Application {
     private static Integer userId = 0;
-    private Integer width = 900;
-    private Integer height = 600;
+    private Integer width = 1200;
+    private Integer height = 700;
     private Node currentPage;
-    private StackPane root = new StackPane();
-    private HBox content = new HBox();
+
+    private HBox root = new HBox();
 
     @Override
     public void start(Stage stage) {
         VBox menu = getMenu(stage);
 
         root.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-        content.getChildren().addAll(menu, currentPage);
-        root.getChildren().add(content);
+        root.getChildren().addAll(menu, currentPage);
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
         stage.setTitle("Watchlist");
@@ -53,7 +56,7 @@ public class Main extends Application {
         Button famousB = new Button("Beliebt");
         Button searchB = new Button("Suchen");
 
-        VBox v1 = new VBox(homeB, myWatchlistB, seenB, notSeenB, famousB, searchB);
+        VBox v1 = new VBox(homeB, searchB, myWatchlistB, seenB, notSeenB, famousB);
 
         ImageView profileIV = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/profile.png")));
         profileIV.setPreserveRatio(true);
@@ -63,7 +66,14 @@ public class Main extends Application {
         profileB.getStyleClass().add("profileB");
         profileB.setGraphic(profileIV);
 
-        VBox v2 = new VBox(profileB);
+        VBox profileContent = getProfileContent(false);
+        profileContent.setVisible(false);
+
+        profileB.setOnAction(actionEvent -> {
+            profileContent.setVisible(!profileContent.isVisible());
+        });
+
+        VBox v2 = new VBox(10, profileContent, profileB);
         v2.setPrefSize(400, 1500);
         v2.setStyle("-fx-padding: 0 0 20 0");
         v2.setAlignment(Pos.BOTTOM_CENTER);
@@ -80,45 +90,20 @@ public class Main extends Application {
             }
         });
 
-        VBox profileContent = getProfileContent(false);
-        profileB.setOnMouseClicked(e -> {
-            double mx = e.getSceneX();
-            double my = e.getSceneY();
-
-            if (root.getChildren().contains(profileContent)) {
-                root.getChildren().remove(profileContent);
-            } else {
-                root.getChildren().add(profileContent);
-            }
-
-            double cx = profileContent.getLayoutX();
-            double cy = profileContent.getLayoutY();
-
-            double tx = cx - mx;
-            double ty = my > cy ? (my - cy) : (cy - my);
-            ty -= 300;
-
-            profileContent.setTranslateY(ty);
-            profileContent.setTranslateX(-tx);
-        });
-
-        profileB.focusedProperty().addListener((observable -> {
-            if (root.getChildren().contains(profileContent)) {
-                root.getChildren().remove(profileContent);
-            }
-        }));
-
         HomePage homePage = null;
-        SearchPage searchPage = new SearchPage(content);
+        SearchPage searchPage = new SearchPage(root);
+        searchB.getStyleClass().add("active");
         currentPage = searchPage;
 
         homeB.setOnAction(actionEvent -> {
             currentPage = homePage == null ? new HomePage() : homePage;
-            content.getChildren().setAll(menu, currentPage);
+            root.getChildren().setAll(menu, currentPage);
+            homeB.getStyleClass().add("active");
         });
         searchB.setOnAction(actionEvent -> {
             currentPage = searchPage == null ? new SearchPage() : searchPage;
-            content.getChildren().setAll(menu, currentPage);
+            root.getChildren().setAll(menu, currentPage);
+            searchB.getStyleClass().add("active");
         });
 
         return menu;
@@ -129,21 +114,25 @@ public class Main extends Application {
         Button b2 = new Button("Einstellung");
 
         b1.setOnAction(actionEvent -> {
-            root.getChildren().add(getLogInFields(false));
+            showLogInFields(false);
         });
 
-
-        VBox vBox = new VBox(b1,b2);
+        VBox vBox = new VBox(b1, b2);
 
         vBox.getStyleClass().add("profileMenu");
+
+        for (Button b : List.of(b1, b2)) {
+            b.addEventHandler(ActionEvent.ACTION, actionEvent -> {
+                vBox.setVisible(false);
+            });
+        }
 
         return vBox;
     }
 
-    public Node getLogInFields(boolean signUp) {
+    public void showLogInFields(boolean signUp) {
         VBox vBox = new VBox(20);
-        vBox.setPrefSize(2000,1500);
-        vBox.setStyle("-fx-background-color: rgba(0,0,0,0.5); -fx-alignment: CENTER;");
+        vBox.setStyle("-fx-alignment: CENTER;");
 
         TextField name = new TextField();
         name.setPromptText("Bentzername");
@@ -152,34 +141,47 @@ public class Main extends Application {
         name.getStyleClass().add("userName");
         password.getStyleClass().add("password");
 
-        Button logIn = new Button(signUp ? "Registrieren" : "Anmelden");
-        logIn.getStyleClass().add("logInB");
+        vBox.getChildren().addAll(name, password);
 
-        Button clearButton = new Button("Zurück");
-        clearButton.getStyleClass().add("logInhideB");
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        ButtonType logInBT = new ButtonType(signUp ? "Registrieren" : "Anmelden", ButtonBar.ButtonData.APPLY);
+        dialog.getDialogPane().getButtonTypes().addAll(logInBT, ButtonType.CANCEL);
 
-        if (!signUp) {
-            Button signUpB = new Button("Registrieren");
-            signUpB.getStyleClass().add("logInB");
-            vBox.getChildren().addAll(name, password, logIn, signUpB, clearButton);
+        Button logInB = (Button) dialog.getDialogPane().lookupButton(logInBT);
+        logInB.setDisable(true);
+        logInB.disableProperty().bind(name.textProperty().isEmpty().or(password.textProperty().isEmpty()));
 
-            signUpB.setOnAction(actionEvent -> {
-                root.getChildren().remove(vBox);
-                root.getChildren().add(getLogInFields(true));
-            });
-        } else {
-            vBox.getChildren().addAll(name, password, logIn, clearButton);
-        }
-
-        clearButton.setOnAction(action -> {
-            root.getChildren().remove(vBox);
+        logInB.setOnAction(actionEvent -> {
+            System.out.println("jo");
+            actionEvent.consume();
         });
 
-        return vBox;
+        dialog.setHeaderText(signUp ? "Registrierung" : "Anmeldung");
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/logIn.css").toExternalForm());
+        dialog.getDialogPane().setContent(vBox);
+        dialog.getDialogPane().setPrefSize(600, 400);
+        dialog.getDialogPane().getStyleClass().add("logInDialog");
+
+        Platform.runLater(() -> name.requestFocus());
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == logInBT) {
+                return new Pair<>(name.getText(), password.getText());
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(result -> {
+            System.out.println(result.getKey() + " : " + result.getValue());
+        });
     }
 
     public static Integer getUserId() {
         return userId;
+    }
+
+    private String getUsername() {
+        return "";
     }
 
     public static void setUserId(Integer userId) {

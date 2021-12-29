@@ -2,11 +2,12 @@
     -body-bgc: #1c1c1c;
     -menu-bgc: -body-bgc;
     -menu-border-color: #2a2a2a;
-    -body-font-color: #dadada;
+    -menu-hover-color: #151515;
+    -body-font-color: #d7d7d7;
     -menu-font-color: #dadada;
     -menu-width: 400;
     -menu-button-height: 30;
-    -textField-color: #606060;
+    -textField-color: #626262;
     -search-button-color: #0077ff;
     -profile-menu-color: #333333;
 }
@@ -46,8 +47,8 @@
     -fx-padding: 0;
 }
 
-.menu .button:hover {
-    -fx-font-weight: 700;
+.menu .button:hover, .menu .active {
+    -fx-background-color: -menu-hover-color;
 }
 
 .menu .menuIcon {
@@ -57,9 +58,12 @@
     -fx-border-style: solid;
 }
 
+.menu .menuIcon:hover {
+    -fx-background-color: none !important;
+}
+
 .menu .menuIcon:hover .menuIV {
     -fx-scale-x: 1.1;
-
 }
 
 .profileMenu {
@@ -84,16 +88,9 @@
    -fx-background-color: -body-bgc;
 }
 
-.userName, .password {
-    -fx-max-height: 50;
-    -fx-max-width: 300;
-    -fx-font-size: 20;
-}
-
 .content, .scrollPane {
     -fx-pref-width: 2000;
     -fx-pref-height: 1500;
-    -fx-background-color: #6e6e6e;
     -fx-background-color: -body-bgc;
     -fx-padding: 10;
 }
@@ -110,7 +107,7 @@
     -fx-alignment: center;
 }
 
-.searchBox .text-field, .searchBox .button {
+.searchBox .text-field, .searchBox .button, .msgL{
     -fx-pref-height: 50;
     -fx-font-size: 16;
     -fx-text-fill: -body-font-color;
@@ -124,6 +121,10 @@
 .searchBox .button {
     -fx-pref-width: 100;
     -fx-background-color: -search-button-color;
+}
+
+.msgL {
+    -fx-background-color: none;
 }
 
 .scrollPane, .scrollPane > .viewport {
