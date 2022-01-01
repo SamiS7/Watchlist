@@ -1,5 +1,6 @@
 package at.watchlist.db.entities;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
@@ -7,6 +8,7 @@ import java.util.Objects;
 
 @Embeddable
 public class MovieId implements Serializable {
+    @JsonbTransient
     @ManyToOne
     private Account account;
     @ManyToOne

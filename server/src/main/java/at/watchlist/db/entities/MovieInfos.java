@@ -105,11 +105,11 @@ public class MovieInfos {
         this.trailerUrl = trailerUrl;
     }
 
-    public Double getImdbRatin() {
+    public Double getImdbRating() {
         return imdbRating;
     }
 
-    public void setImdbRatin(Double imdbRating) {
+    public void setImdbRating(Double imdbRating) {
         this.imdbRating = imdbRating;
     }
 }

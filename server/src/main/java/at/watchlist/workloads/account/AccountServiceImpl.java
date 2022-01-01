@@ -1,7 +1,10 @@
 package at.watchlist.workloads.account;
 
 import at.watchlist.db.entities.Account;
+import at.watchlist.db.entities.MovieInfos;
 import at.watchlist.models.AccountDTO;
+import at.watchlist.workloads.movie.MovieServiceImpl;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -11,9 +14,12 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
     @Inject
     private AccountRepoImpl accountRepo;
+    @Inject
+    private MovieServiceImpl movieService;
 
-    public AccountServiceImpl(AccountRepoImpl accountRepo) {
+    public AccountServiceImpl(AccountRepoImpl accountRepo, MovieServiceImpl movieService) {
         this.accountRepo = accountRepo;
+        this.movieService = movieService;
     }
 
     @Override
@@ -28,11 +34,15 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account add(AccountDTO accountDTO) {
-        if (!accountRepo.usernameExists(accountDTO.getUsername())) {
+        if (accountDTO != null) {
+            accountDTO.setPassword(BCrypt.hashpw(accountDTO.getPassword(), BCrypt.gensalt()));
             Account account = new Account(accountDTO.getUsername(), accountDTO.getPassword());
-            accountRepo.add(account);
-            return account;
+            if (validAccount(account)) {
+                accountRepo.add(account);
+                return account;
+            }
         }
+
         return null;
     }
 
@@ -47,15 +57,52 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean update(Account account) {
-        if (accountRepo.get(account.getId()) != null && !accountRepo.usernameExists(account.getUsername())) {
+    public boolean update(Account account, String oldPassword) {
+        if (oldPassword.length() >= 5 && BCrypt.checkpw(oldPassword, accountRepo.get(account.getId()).getPassword())) {
+                account.setPassword(BCrypt.hashpw(account.getPassword(), BCrypt.gensalt()));
+        } else if (oldPassword.length() > 0) {
+            return false;
+        }
+
+        if (account != null && validAccount(account)) {
+            accountRepo.update(account);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean addMovie(Long accountId, MovieInfos movieInfos) {
+        Account account = accountRepo.get(accountId);
+
+        if (account != null && movieInfos != null) {
+            movieService.add(movieInfos);
+            account.addMovies(movieInfos);
             accountRepo.update(account);
             return true;
         }
         return false;
     }
 
-    public AccountRepoImpl getAccountRepo() {
-        return accountRepo;
+    @Override
+    public boolean removeSavedMovie(Long accountId, String movieId) {
+        Account account = accountRepo.get(accountId);
+        MovieInfos movieInfos = movieService.get(movieId);
+
+        if (account != null && movieInfos != null) {
+            account.removeMovie(movieInfos);
+            accountRepo.update(account);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean checkLength(String s1, String s2) {
+        return s1.length() >= 3 && s2.length() >= 5;
+    }
+
+    public boolean validAccount(Account account) {
+        return checkLength(account.getUsername(), account.getPassword()) && !accountRepo.usernameExists(account.getUsername());
     }
 }

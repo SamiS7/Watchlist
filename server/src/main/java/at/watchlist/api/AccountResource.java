@@ -1,9 +1,9 @@
 package at.watchlist.api;
 
 import at.watchlist.db.entities.Account;
+import at.watchlist.db.entities.MovieInfos;
 import at.watchlist.models.AccountDTO;
 import at.watchlist.workloads.account.AccountServiceImpl;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -32,21 +32,14 @@ public class AccountResource {
     @POST
     @Transactional
     public Response addAccount(AccountDTO accountDTO) {
-        if (validAccount(accountDTO)) {
-            accountDTO.setPassword(BCrypt.hashpw(accountDTO.getPassword(), BCrypt.gensalt()));
-            return Response.ok(accountService.add(accountDTO)).build();
-        }
-        return Response.status(404).build();
+        Account account = accountService.add(accountDTO);
+        return (account != null ? Response.ok(account) : Response.status(404)).build();
     }
 
     @PUT
     @Transactional
-    public Response updateAccount(Account account) {
-        if (validAccount(new AccountDTO(account.getUsername(), account.getPassword()))) {
-            account.setPassword(BCrypt.hashpw(account.getPassword(), BCrypt.gensalt()));
-            return accountService.update(account) ? Response.ok().build() : Response.status(404).build();
-        }
-        return Response.status(404).build();
+    public Response updateAccount(Account account, String oldPassword) {
+        return (accountService.update(account, oldPassword) ? Response.ok() : Response.status(404)).build();
     }
 
     @DELETE
@@ -55,11 +48,13 @@ public class AccountResource {
         return accountService.remove(id) ? Response.ok().build() : Response.status(404).build();
     }
 
-    public static boolean checkLength(String s1, String s2) {
-        return s1.length() >= 3 && s2.length() >= 5;
-    }
-
-    public boolean validAccount(AccountDTO accountDTO) {
-        return checkLength(accountDTO.getUsername(), accountDTO.getPassword()) && !accountService.getAccountRepo().usernameExists(accountDTO.getUsername());
+    @POST
+    @Path("{accountId}/movie")
+    @Transactional
+    public Response addMovie(@PathParam("accountId") Long accountId, MovieInfos movieInfos) {
+        if (accountId != null && movieInfos != null) {
+            return (accountService.addMovie(accountId, movieInfos) ? Response.ok() : Response.status(404)).build();
+        }
+        return Response.status(404).build();
     }
 }

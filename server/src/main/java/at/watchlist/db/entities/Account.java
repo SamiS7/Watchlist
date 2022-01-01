@@ -14,9 +14,9 @@ public class Account {
     private String password;
     @OneToMany(mappedBy = "movieId.account", cascade = CascadeType.ALL)
     private List<SavedMovie> movies = new ArrayList<>();
-    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Reminder> reminders = new ArrayList<>();
-    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<SearchHistory> searchHistories = new ArrayList<>();
 
     public Account() {
@@ -32,6 +32,10 @@ public class Account {
         SavedMovie savedMovie = new SavedMovie(movieId, LocalDateTime.now(), false, false);
 
         this.movies.add(savedMovie);
+    }
+
+    public boolean removeMovie(MovieInfos movieInfos) {
+        return movies.remove(movieInfos);
     }
 
     public void addReminder(MovieInfos movieInfos, LocalDateTime time) {
