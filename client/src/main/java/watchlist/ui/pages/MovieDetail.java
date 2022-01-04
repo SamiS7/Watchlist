@@ -12,7 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import watchlist.Main;
-import watchlist.forServer.serverClass.MovieInfos;
+import watchlist.forServer.models.MovieInfos;
 import watchlist.forServer.serverConn.Insertion;
 import watchlist.forServer.serverConn.Selection;
 
@@ -145,7 +145,7 @@ public class MovieDetail extends StackPane {
     }
 
     private boolean isSaved() {
-        return Selection.getSelection().isSaved(movieInfos.getId(), Main.getUserId());
+        return Selection.getSelection().isSaved(movieInfos.getId());
     }
 
     public MovieInfos getMovieInfos() {

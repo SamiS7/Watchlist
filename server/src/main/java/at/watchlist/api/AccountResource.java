@@ -30,16 +30,25 @@ public class AccountResource {
     }
 
     @POST
+    @Path("signUp")
     @Transactional
-    public Response addAccount(AccountDTO accountDTO) {
-        Account account = accountService.add(accountDTO);
-        return (account != null ? Response.ok(account) : Response.status(404)).build();
+    public Response signUp(AccountDTO accountDTO) {
+        var response = accountService.add(accountDTO);
+        return (response.isSuccess() ? Response.ok(response) : Response.status(404)).entity((response)).build();
+    }
+
+    @POST
+    @Path("logIn")
+    public Response logIn(AccountDTO accountDTO) {
+        var response = accountService.logIn(accountDTO);
+        return (response.isSuccess() ? Response.ok(response) : Response.status(404)).entity((response)).build();
     }
 
     @PUT
     @Transactional
     public Response updateAccount(Account account, String oldPassword) {
-        return (accountService.update(account, oldPassword) ? Response.ok() : Response.status(404)).build();
+        String s = accountService.update(account, oldPassword);
+        return (s.length() <= 0 ? Response.ok() : Response.status(404, s)).build();
     }
 
     @DELETE

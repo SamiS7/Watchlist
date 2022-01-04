@@ -1,23 +1,15 @@
-package at.watchlist.db.entities;
+package watchlist.forServer.models;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 public class Account {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String username;
     private String password;
-    @OneToMany(mappedBy = "movieId.account", cascade = CascadeType.ALL)
     private List<SavedMovie> movies = new ArrayList<>();
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Reminder> reminders = new ArrayList<>();
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<SearchHistory> searchHistories = new ArrayList<>();
 
     public Account() {

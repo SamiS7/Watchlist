@@ -1,6 +1,6 @@
 package watchlist.forServer.serverConn;
 
-import watchlist.forServer.serverClass.MovieInfos;
+import watchlist.forServer.models.MovieInfos;
 
 public class Insertion {
     private static Insertion insertion;

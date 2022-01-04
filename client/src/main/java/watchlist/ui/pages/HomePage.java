@@ -13,7 +13,7 @@ public class HomePage extends VBox {
         this.getChildren().add(content);
 
         content.getStyleClass().add("content");
-        content.getChildren().addAll(new MovieRow(ListCategory.SHORTLY_SAVED, Main.getUserId(), rowLimit));
+        content.getChildren().addAll(new MovieRow(ListCategory.SHORTLY_SAVED, rowLimit));
     }
 
 }

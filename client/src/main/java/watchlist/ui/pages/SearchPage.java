@@ -18,13 +18,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import watchlist.forServer.serverClass.MovieInfos;
+import watchlist.forServer.models.MovieInfos;
 import watchlist.request.SyncRequest;
 import watchlist.ui.components.AlertError;
 import watchlist.ui.components.MovieInfoForImdbO;
 import watchlist.ui.components.MovieInfoForImdbU;
-
-import java.util.concurrent.ExecutionException;
 
 public class SearchPage extends VBox {
     private ScrollPane scrollPane;

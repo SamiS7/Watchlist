@@ -1,5 +1,6 @@
 package watchlist;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,19 +13,21 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Pair;
+import watchlist.forServer.models.Account;
+import watchlist.request.LogIn;
+import watchlist.ui.components.AlertError;
 import watchlist.ui.pages.HomePage;
 import watchlist.ui.pages.SearchPage;
 
 import java.util.List;
 
 public class Main extends Application {
-    private static Integer userId = 0;
+    private static Long userId = -1L;
     private Integer width = 1200;
     private Integer height = 700;
     private Node currentPage;
-
     private HBox root = new HBox();
+    private String serverUrl = "http://localhost:8080";
 
     @Override
     public void start(Stage stage) {
@@ -66,7 +69,7 @@ public class Main extends Application {
         profileB.getStyleClass().add("profileB");
         profileB.setGraphic(profileIV);
 
-        VBox profileContent = getProfileContent(false);
+        VBox profileContent = getProfileContent();
         profileContent.setVisible(false);
 
         profileB.setOnAction(actionEvent -> {
@@ -109,17 +112,17 @@ public class Main extends Application {
         return menu;
     }
 
-    public VBox getProfileContent(boolean logedIn) {
-        Button b1 = new Button(logedIn ? "Abmelden" : "Anmelden/Registrieren");
+    public VBox getProfileContent() {
+        Button b1 = new Button(userId != -1 ? "Abmelden" : "Anmelden/Registrieren");
         Button b2 = new Button("Einstellung");
-
-        b1.setOnAction(actionEvent -> {
-            showLogInFields(false);
-        });
 
         VBox vBox = new VBox(b1, b2);
 
         vBox.getStyleClass().add("profileMenu");
+
+        b1.setOnAction(actionEvent -> {
+            showLogInDialog(true, vBox);
+        });
 
         for (Button b : List.of(b1, b2)) {
             b.addEventHandler(ActionEvent.ACTION, actionEvent -> {
@@ -130,7 +133,7 @@ public class Main extends Application {
         return vBox;
     }
 
-    public void showLogInFields(boolean signUp) {
+    public void showLogInDialog(boolean signUp, VBox profileMenu) {
         VBox vBox = new VBox(20);
         vBox.setStyle("-fx-alignment: CENTER;");
 
@@ -138,23 +141,28 @@ public class Main extends Application {
         name.setPromptText("Bentzername");
         PasswordField password = new PasswordField();
         password.setPromptText("Passwort");
+        Button signUpB = new Button(!signUp ? "Zum Registrieren" : "Zum Anmelden");
+        signUpB.getStyleClass().add("signUpB");
         name.getStyleClass().add("userName");
         password.getStyleClass().add("password");
 
-        vBox.getChildren().addAll(name, password);
+        vBox.getChildren().addAll(name, password, signUpB);
 
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<Account> dialog = new Dialog<>();
         ButtonType logInBT = new ButtonType(signUp ? "Registrieren" : "Anmelden", ButtonBar.ButtonData.APPLY);
-        dialog.getDialogPane().getButtonTypes().addAll(logInBT, ButtonType.CANCEL);
+        ButtonType okBT = ButtonType.OK;
+        ButtonType cancelBT = ButtonType.CANCEL;
+        dialog.getDialogPane().getButtonTypes().addAll(logInBT, okBT, cancelBT);
 
         Button logInB = (Button) dialog.getDialogPane().lookupButton(logInBT);
+        logInB.getStyleClass().add("dialogB");
         logInB.setDisable(true);
         logInB.disableProperty().bind(name.textProperty().isEmpty().or(password.textProperty().isEmpty()));
 
-        logInB.setOnAction(actionEvent -> {
-            System.out.println("jo");
-            actionEvent.consume();
-        });
+        Button cancelB = (Button) dialog.getDialogPane().lookupButton(cancelBT);
+        cancelB.getStyleClass().add("dialogB");
+        Button okB = (Button) dialog.getDialogPane().lookupButton(okBT);
+        okB.getStyleClass().add("dialogB");
 
         dialog.setHeaderText(signUp ? "Registrierung" : "Anmeldung");
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/logIn.css").toExternalForm());
@@ -164,19 +172,59 @@ public class Main extends Application {
 
         Platform.runLater(() -> name.requestFocus());
 
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == logInBT) {
-                return new Pair<>(name.getText(), password.getText());
-            }
-            return null;
+        dialog.show();
+
+        signUpB.setOnAction(actionEvent -> {
+            dialog.close();
+            showLogInDialog(!signUp, profileMenu);
         });
 
-        dialog.showAndWait().ifPresent(result -> {
-            System.out.println(result.getKey() + " : " + result.getValue());
+        dialog.setResultConverter(buttonType -> buttonType.equals(logInBT) ? new Account(name.getText().trim(), password.getText().trim()) : null);
+
+        LogIn.initObjectMapper();
+        logInB.setOnAction(actionEvent -> {
+            try {
+                Account account = dialog.getResult();
+
+                String url = serverUrl + "/account";
+                if (signUp) {
+                    url += "/signUp";
+                } else {
+                    url += "/logIn";
+                }
+                var response = LogIn.logIn(url, account);
+
+                if (response.getStatus() == 404 && !response.getBody().isSuccess()) {
+                    Label errorL = new Label();
+                    errorL.getStyleClass().add("errorLabel");
+                    errorL.setText(response.getBody().getErrorMsg());
+                    int i = vBox.getChildren().size() - 1;
+                    if (vBox.getChildren().get(i) instanceof Label) {
+                        vBox.getChildren().set(i, errorL);
+                    } else {
+                        vBox.getChildren().add(errorL);
+                    }
+                    dialog.show();
+                } else {
+                    var a = response.getBody().getAccount();
+                    userId = a.getId();
+                    Label username = new Label("User: " + a.getUsername());
+                    username.getStyleClass().add("usernameL");
+
+                    var v = getProfileContent();
+                    v.getChildren().add(0, username);
+                    profileMenu.getChildren().setAll(v.getChildren());
+                    profileMenu.setVisible(true);
+                }
+
+            } catch (UnirestException e) {
+                e.printStackTrace();
+                new AlertError("Technische Probleme!", "Es sind technische Probleme aufgetreten. Versuchen es erneut!");
+            }
         });
     }
 
-    public static Integer getUserId() {
+    public static Long getUserId() {
         return userId;
     }
 
@@ -184,7 +232,7 @@ public class Main extends Application {
         return "";
     }
 
-    public static void setUserId(Integer userId) {
+    public static void setUserId(Long userId) {
         Main.userId = userId;
     }
 

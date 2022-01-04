@@ -30,6 +30,12 @@ public class AccountRepoImpl implements AccountRepo {
         return query.getResultStream().findFirst().orElse(null);
     }
 
+    public Account get(String username) {
+        TypedQuery<Account> query = entityManager.createQuery("select a from Account a where a.username = :username", Account.class);
+        query.setParameter("username", username);
+        return query.getResultStream().findFirst().orElse(null);
+    }
+
     @Override
     public void add(Account account) {
         entityManager.persist(account);
@@ -49,6 +55,7 @@ public class AccountRepoImpl implements AccountRepo {
     public boolean usernameExists(String s) {
         Query query = entityManager.createQuery("select a from Account a where a.username = :username");
         query.setParameter("username", s);
+        var r = query.getResultList();
         return query.getResultList().size() > 0;
     }
 }

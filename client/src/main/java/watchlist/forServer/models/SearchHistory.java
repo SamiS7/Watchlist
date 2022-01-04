@@ -1,17 +1,9 @@
-package at.watchlist.db.entities;
+package watchlist.forServer.models;
 
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
 public class SearchHistory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonbTransient
-    @ManyToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
     private String searchStr;
     private LocalDateTime time;

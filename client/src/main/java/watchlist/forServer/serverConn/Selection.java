@@ -1,11 +1,13 @@
 package watchlist.forServer.serverConn;
 
-import watchlist.forServer.serverClass.Poster;
+import watchlist.Main;
+import watchlist.forServer.models.MovieInfos;
 
 import java.util.List;
 
 public class Selection {
     private static Selection selection;
+    private Long userId = Main.getUserId();
 
     public Selection() {
     }
@@ -15,27 +17,27 @@ public class Selection {
     }
 
 
-    public List<Poster> getShortlyAdded(int userId, int limit) {
+    public List<MovieInfos> getShortlyAdded( int limit) {
         return null;
     }
 
-    public List<Poster> getWatchlist(int userId) {
+    public List<MovieInfos> getWatchlist() {
         return null;
     }
 
-    public List<Poster> getWatchedMovies(int userId, int limit) {
+    public List<MovieInfos> getWatchedMovies( int limit) {
         return null;
     }
 
-    public List<Poster> getNotWatchedMovies(int userId, int limit) {
+    public List<MovieInfos> getNotWatchedMovies( int limit) {
         return null;
     }
 
-    public List<Poster> getBestRated(int limit) {
+    public List<MovieInfos> getBestRated(int limit) {
         return null;
     }
 
-    public boolean isSaved(String id, Integer userId) {
+    public boolean isSaved(String id) {
         return false;
     }
 }

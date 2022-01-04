@@ -8,6 +8,7 @@ public class AlertError extends Alert {
         this.setTitle("Fehler Meldung");
         this.setHeaderText(header);
         this.setContentText(des);
+        this.getDialogPane().setPrefSize(400, 200);
         showAndWait();
     }
 }
