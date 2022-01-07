@@ -7,6 +7,7 @@ import at.watchlist.workloads.account.AccountServiceImpl;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
@@ -44,6 +45,7 @@ public class AccountResource {
         return (response.isSuccess() ? Response.ok(response) : Response.status(404)).entity((response)).build();
     }
 
+    /*
     @PUT
     @Transactional
     public Response updateAccount(Account account, String oldPassword) {
@@ -56,7 +58,8 @@ public class AccountResource {
     public Response removeAccount(Long id) {
         return accountService.remove(id) ? Response.ok().build() : Response.status(404).build();
     }
-
+    */
+    
     @POST
     @Path("{accountId}/movie")
     @Transactional
@@ -75,5 +78,12 @@ public class AccountResource {
             return (accountService.removeSavedMovie(accountId, movieId) ? Response.ok() : Response.status(404)).build();
         }
         return Response.status(404).build();
+    }
+
+    @GET
+    @Path("{accountId}/{movieId}")
+    public Response getSavedMovie(@PathParam("accountId") Long accountId, @PathParam("movieId") String movieId) {
+        var movie = accountService.getSavedMovie(accountId, movieId);
+        return (movie != null ? Response.ok(movie) : Response.status(404)).build();
     }
 }

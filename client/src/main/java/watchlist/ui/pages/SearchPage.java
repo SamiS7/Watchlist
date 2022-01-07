@@ -19,7 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import watchlist.forServer.models.MovieInfos;
-import watchlist.request.SyncRequest;
+import watchlist.request.IMDBRequest;
 import watchlist.ui.components.AlertError;
 import watchlist.ui.components.MovieInfoForImdbO;
 import watchlist.ui.components.MovieInfoForImdbU;
@@ -92,7 +92,7 @@ public class SearchPage extends VBox {
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
 
-        Task<JsonObject> taskJson = SyncRequest.request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
+        Task<JsonObject> taskJson = IMDBRequest.request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
         //Task<JsonObject> taskJson = SyncRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
 
         taskJson.setOnSucceeded(action -> {
@@ -154,7 +154,7 @@ public class SearchPage extends VBox {
     }
 
     private void showMovieDetail(String pId) {
-        Task<JsonObject> jo = SyncRequest.request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
+        Task<JsonObject> jo = IMDBRequest.request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
 
         //Task<JsonObject> jo = SyncRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
 
@@ -191,11 +191,10 @@ public class SearchPage extends VBox {
     private MovieInfos convertToMovieInfo(Object o) {
         if (o instanceof MovieInfoForImdbO m) {
             return new MovieInfos(m.getId(), m.getTitle(), m.getYear(), m.getPlot(), m.getType(), m.getGenres(),
-                    m.getStars(), m.getImage(), m.getTrailer().getLinkEmbed(), m.getTrailer().getThumbnailUrl(), m.getImDbRatin());
+                    m.getStars(), m.getImage(), m.getTrailer().getLinkEmbed(), m.getImDbRatin());
         } else if (o instanceof MovieInfoForImdbU m) {
             return new MovieInfos(m.getId(), m.getTitle(), m.getYear(), m.getPlot(), null, null,
-                    null, m.getPoster(), "https://www.imdb.com/video/imdb/" + m.getTrailer().getId() + "/imdb/embed",
-                    null, m.getRating());
+                    null, m.getPoster(), "https://www.imdb.com/video/imdb/" + m.getTrailer().getId() + "/imdb/embed", m.getRating());
         }
         return null;
     }

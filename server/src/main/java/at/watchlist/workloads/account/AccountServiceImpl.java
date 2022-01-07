@@ -82,36 +82,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean remove(Long id) {
-        Account account = accountRepo.findById(id);
-        if (account != null) {
-            accountRepo.delete(account);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public String update(Account account, String oldPassword) {
-        if (oldPassword.length() >= 5) {
-            if (checkPassword(oldPassword, account.getId())) {
-                account.setPassword(BCrypt.hashpw(account.getPassword(), BCrypt.gensalt()));
-            } else {
-                return "Das alte Passwort stimmt nicht!";
-            }
-        } else if (oldPassword.length() > 0) {
-            return "Das Passwort muss mind 5 Zeichen haben!";
-        }
-        String v = validAccount(account);
-        if (account != null || v.length() <= 0) {
-            accountRepo.getEntityManager().merge(account);
-            return v;
-        }
-
-        return v;
-    }
-
-    @Override
     public boolean addMovie(Long accountId, MovieInfos movieInfos) {
         Account account = accountRepo.findById(accountId);
 
@@ -120,7 +90,7 @@ public class AccountServiceImpl implements AccountService {
                 movieService.add(movieInfos);
             }
             account.addMovies(movieInfos);
-            accountRepo.persist(account);
+            accountRepo.getEntityManager().merge(account);
             return true;
         }
         return false;
@@ -142,6 +112,12 @@ public class AccountServiceImpl implements AccountService {
             }
         }
         return false;
+    }
+
+    @Override
+    public SavedMovie getSavedMovie(Long accountId, String movieId) {
+        MovieId movieId1 = new MovieId(accountRepo.findById(accountId), movieService.get(movieId));
+        return savedMovieRepo.findById(movieId1);
     }
 
     public static boolean checkLength(String s1, String s2) {

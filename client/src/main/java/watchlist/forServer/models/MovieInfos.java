@@ -10,13 +10,12 @@ public class MovieInfos {
     String stars;
     String posterUrl;
     String trailerUrl;
-    String thumbNail;
     Double imdbRating;
 
     public MovieInfos() {
     }
 
-    public MovieInfos(String id, String title, String year, String plot, String type, String genres, String stars, String posterUrl, String trailerUrl, String thumbNail, Double imdbRating) {
+    public MovieInfos(String id, String title, String year, String plot, String type, String genres, String stars, String posterUrl, String trailerUrl, Double imdbRating) {
         this.id = id;
         this.title = title;
         this.year = year;
@@ -26,7 +25,6 @@ public class MovieInfos {
         this.stars = stars;
         this.posterUrl = posterUrl;
         this.trailerUrl = trailerUrl;
-        this.thumbNail = thumbNail;
         this.imdbRating = imdbRating;
     }
 
@@ -100,14 +98,6 @@ public class MovieInfos {
 
     public void setTrailerUrl(String trailerUrl) {
         this.trailerUrl = trailerUrl;
-    }
-
-    public String getThumbNail() {
-        return thumbNail;
-    }
-
-    public void setThumbNail(String thumbNail) {
-        this.thumbNail = thumbNail;
     }
 
     public Double getImdbRatin() {

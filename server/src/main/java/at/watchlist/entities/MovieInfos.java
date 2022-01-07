@@ -1,5 +1,6 @@
 package at.watchlist.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -9,6 +10,7 @@ public class MovieInfos {
     String id;
     String title;
     String year;
+    @Column(columnDefinition = "TEXT")
     String plot;
     String type;
     String genres;

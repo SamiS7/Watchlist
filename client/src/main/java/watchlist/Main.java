@@ -3,6 +3,8 @@ package watchlist;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -22,16 +24,16 @@ import watchlist.ui.pages.SearchPage;
 import java.util.List;
 
 public class Main extends Application {
-    private static Long userId = -1L;
+    private static LongProperty userId = new SimpleLongProperty(-1);
     private final Integer width = 1200;
-    private final Integer height = 700;
+    private final Integer height = 800;
     private Node currentPage;
     private HBox root = new HBox();
     private static String serverUrl = "http://localhost:8080";
 
     @Override
     public void start(Stage stage) {
-        VBox menu = getMenu(stage);
+        VBox menu = getMenu();
 
         root.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         root.getChildren().addAll(menu, currentPage);
@@ -44,7 +46,7 @@ public class Main extends Application {
         stage.show();
     }
 
-    public VBox getMenu(Stage stage) {
+    public VBox getMenu() {
         VBox menu = new VBox();
         menu.getStyleClass().add("menu");
         Image menuIcon = new Image(Main.class.getResourceAsStream("/icons/menuIconw.png"));
@@ -96,7 +98,7 @@ public class Main extends Application {
         });
 
         HomePage homePage = null;
-        SearchPage searchPage = new SearchPage(root);
+        SearchPage searchPage = new SearchPage("game", root);
         searchB.getStyleClass().add("active");
         currentPage = searchPage;
 
@@ -115,7 +117,7 @@ public class Main extends Application {
     }
 
     public VBox getProfileContent() {
-        Button b1 = new Button(userId != -1 ? "Abmelden" : "Anmelden/Registrieren");
+        Button b1 = new Button(userId.get() != -1 ? "Abmelden" : "Anmelden/Registrieren");
         Button b2 = new Button("Einstellung");
 
         VBox vBox = new VBox(b1, b2);
@@ -123,7 +125,7 @@ public class Main extends Application {
         vBox.getStyleClass().add("profileMenu");
 
         b1.setOnAction(actionEvent -> {
-            showLogInDialog(false, vBox);
+            showLogInDialog(true, vBox);
         });
 
         for (Button b : List.of(b1, b2)) {
@@ -139,10 +141,11 @@ public class Main extends Application {
         VBox vBox = new VBox(20);
         vBox.setStyle("-fx-alignment: CENTER;");
 
-        TextField name = new TextField();
+        TextField name = new TextField("Sami");
         name.setPromptText("Bentzername");
         PasswordField password = new PasswordField();
         password.setPromptText("Passwort");
+        password.setText("passw");
         Button signUpB = new Button(!signUp ? "Zum Registrieren" : "Zum Anmelden");
         signUpB.getStyleClass().add("signUpB");
         name.getStyleClass().add("userName");
@@ -208,7 +211,7 @@ public class Main extends Application {
                     dialog.show();
                 } else {
                     var a = response.getBody().getAccount();
-                    userId = a.getId();
+                    userId.set(a.getId());
                     Label username = new Label("User: " + a.getUsername());
                     username.getStyleClass().add("usernameL");
 
@@ -223,18 +226,12 @@ public class Main extends Application {
                 new AlertError("Technische Probleme!", "Es sind technische Probleme aufgetreten. Versuchen es erneut!");
             }
         });
+
+        logInB.fireEvent(new ActionEvent());
     }
 
-    public static Long getUserId() {
+    public static LongProperty userIdProperty() {
         return userId;
-    }
-
-    private String getUsername() {
-        return "";
-    }
-
-    public static void setUserId(Long userId) {
-        Main.userId = userId;
     }
 
     public static String getServerUrl() {

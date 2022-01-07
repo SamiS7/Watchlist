@@ -1,5 +1,6 @@
 package watchlist.ui.pages;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,12 +17,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import watchlist.Main;
 import watchlist.forServer.models.MovieInfos;
-import watchlist.forServer.serverConn.Selection;
-import watchlist.request.SaveMovie;
+import watchlist.forServer.models.SavedMovie;
+import watchlist.request.MovieRequests;
+import watchlist.ui.components.AlertError;
 
 public class MovieDetail extends StackPane {
     private MovieInfos movieInfos;
+    private SavedMovie savedMovie;
+    private Long userId = Main.userIdProperty().get();
     private BooleanProperty isSaved = new SimpleBooleanProperty();
+    private BooleanProperty seen = new SimpleBooleanProperty();
     private BorderPane borderPane;
 
     public MovieDetail(MovieInfos movieInfos) {
@@ -30,7 +35,12 @@ public class MovieDetail extends StackPane {
     }
 
     public void initContent() {
-        isSaved.set(isSaved());
+        initSavedMovie();
+
+        Main.userIdProperty().addListener(observable -> {
+            initSavedMovie();
+        });
+
         borderPane = new BorderPane();
         this.getStyleClass().add("content");
         this.getChildren().add(borderPane);
@@ -54,7 +64,7 @@ public class MovieDetail extends StackPane {
         Button saveForLater = new Button(bStr);
         Button trailerB = new Button("Trailer anschauen");
         CheckBox seenCheckBox = new CheckBox("Schon gesehen");
-        seenCheckBox.selectedProperty().bind(isSaved);
+        seenCheckBox.selectedProperty().bind(seen);
         hb.getChildren().addAll(saveForLater, seenCheckBox, trailerB);
         hb.setAlignment(Pos.CENTER);
         hb.setSpacing(20);
@@ -62,16 +72,28 @@ public class MovieDetail extends StackPane {
         trailerB.getStyleClass().add("trailerButton");
         seenCheckBox.getStyleClass().add("seenCheckBox");
 
+        saveForLater.disableProperty().bind(Main.userIdProperty().lessThan(0));
+        isSaved.addListener((observable, oldVal, newVal) -> {
+            saveForLater.setText(newVal ? "Löschen" : "Speichern");
+        });
+
+        seenCheckBox.disableProperty().bind(saveForLater.disableProperty().and(isSaved));
         saveForLater.setOnAction(actionEvent -> {
             try {
-                var response = SaveMovie.saveMovie(movieInfos, Main.getUserId(), !isSaved.get());
+                HttpResponse response;
+                if (isSaved.get()) {
+                    response = MovieRequests.removeMovie(movieInfos.getId(), userId);
+                } else {
+                    response = MovieRequests.saveMovie(movieInfos, userId);
+                }
 
+                System.out.println(response.getStatus() + ": " + response.getStatusText());
                 if (response.getStatus() == 200) {
-                    isSaved.set(!isSaved.get());
-                    saveForLater.setText(isSaved.get() ? "Löschen" : "Speichern");
+                    initSavedMovie();
                 }
             } catch (UnirestException e) {
                 e.printStackTrace();
+                new AlertError("Technische Probleme!", "Es sind technische Probleme aufgetreten. Versuchen es später erneut!");
             }
 
         });
@@ -148,15 +170,23 @@ public class MovieDetail extends StackPane {
         });
     }
 
-    private boolean isSaved() {
-        return Selection.getINSTANCE().isSaved(movieInfos.getId());
+    public void initSavedMovie() {
+        if (userId >= 0) {
+            try {
+                var response = MovieRequests.getSavedMovie(movieInfos.getId(), userId);
+
+                if (response.getStatus() == 200) {
+                    savedMovie = response.getBody();
+                    isSaved.set(true);
+                    seen.set(savedMovie.getSeen());
+                } else if (response.getStatus() == 404) {
+                    isSaved.set(false);
+                    seen.set(false);
+                }
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public MovieInfos getMovieInfos() {
-        return movieInfos;
-    }
-
-    public void setMovieInfos(MovieInfos movieInfos) {
-        this.movieInfos = movieInfos;
-    }
 }

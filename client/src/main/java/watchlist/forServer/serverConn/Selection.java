@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Selection {
     private static Selection INSTANCE;
-    private Long userId = Main.getUserId();
+    private Long userId = Main.userIdProperty().get();
 
     public Selection() {
     }

@@ -4,10 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.concurrent.Task;
 
-public class SyncRequest {
+public class IMDBRequest {
 
 
     public static Task<JsonObject> request(String urlStr) {

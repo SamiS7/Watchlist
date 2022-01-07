@@ -2,6 +2,7 @@ package at.watchlist.workloads.account;
 
 import at.watchlist.entities.Account;
 import at.watchlist.entities.MovieInfos;
+import at.watchlist.entities.SavedMovie;
 import at.watchlist.models.AccountDTO;
 import at.watchlist.models.LogInModel;
 
@@ -16,11 +17,9 @@ public interface AccountService {
 
     LogInModel logIn(AccountDTO accountDTO);
 
-    boolean remove(Long id);
-
-    String update(Account account, String oldPassword);
-
     boolean addMovie(Long accountId, MovieInfos movieInfos);
 
     boolean removeSavedMovie(Long accountId, String MovieId);
+
+    SavedMovie getSavedMovie(Long accountId, String movieId);
 }
