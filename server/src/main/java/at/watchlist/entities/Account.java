@@ -1,9 +1,9 @@
-package at.watchlist.db.entities;
+package at.watchlist.entities;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Account {
@@ -13,12 +13,10 @@ public class Account {
     @Column(unique = true)
     private String username;
     private String password;
-    @OneToMany(mappedBy = "movieId.account", cascade = CascadeType.ALL)
-    private List<SavedMovie> movies = new ArrayList<>();
+    @OneToMany(mappedBy = "movieId.account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<SavedMovie> movies = new HashSet<>();
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<Reminder> reminders = new ArrayList<>();
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<SearchHistory> searchHistories = new ArrayList<>();
+    private Set<SearchHistory> searchHistories = new HashSet<>();
 
     public Account() {
     }
@@ -35,13 +33,8 @@ public class Account {
         this.movies.add(savedMovie);
     }
 
-    public boolean removeMovie(MovieInfos movieInfos) {
-        return movies.remove(movieInfos);
-    }
-
-    public void addReminder(MovieInfos movieInfos, LocalDateTime time) {
-        Reminder reminder = new Reminder(this, movieInfos, time);
-        reminders.add(reminder);
+    public boolean removeMovie(SavedMovie savedMovie) {
+        return movies.remove(savedMovie);
     }
 
     public void addSearchHistory(String searchStr) {
@@ -49,27 +42,19 @@ public class Account {
         searchHistories.add(searchHistory);
     }
 
-    public List<SavedMovie> getMovies() {
+    public Set<SavedMovie> getMovies() {
         return movies;
     }
 
-    public void setMovies(List<SavedMovie> movies) {
+    public void setMovies(Set<SavedMovie> movies) {
         this.movies = movies;
     }
 
-    public List<Reminder> getReminder() {
-        return reminders;
-    }
-
-    public void setReminder(List<Reminder> reminders) {
-        this.reminders = reminders;
-    }
-
-    public List<SearchHistory> getSearchHistories() {
+    public Set<SearchHistory> getSearchHistories() {
         return searchHistories;
     }
 
-    public void setSearchHistories(List<SearchHistory> searchHistories) {
+    public void setSearchHistories(Set<SearchHistory> searchHistories) {
         this.searchHistories = searchHistories;
     }
 

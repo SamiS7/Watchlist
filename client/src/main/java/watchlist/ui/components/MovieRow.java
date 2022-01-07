@@ -1,5 +1,6 @@
 package watchlist.ui.components;
 
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -44,7 +45,7 @@ public class MovieRow extends VBox {
         this.getChildren().addAll(titel, getContent());
     }
 
-    public HBox getContent() {
+    public ScrollPane getContent() {
         HBox h = new HBox();
         List<MovieInfos> movieData = getMovieData();
 
@@ -52,16 +53,20 @@ public class MovieRow extends VBox {
             Image image = new Image(m.getPosterUrl());
             h.getChildren().add(new ImageView(image));
         }
-        return h;
+
+        ScrollPane scrollPane = new ScrollPane(h);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        return scrollPane;
     }
 
     public List<MovieInfos> getMovieData() {
         return switch (listCategory) {
-            case SHORTLY_SAVED -> Selection.getSelection().getShortlyAdded(limit);
-            case MY_WATCHLIST -> Selection.getSelection().getWatchlist();
-            case SEEN -> Selection.getSelection().getWatchedMovies(limit);
-            case NOT_SEEN -> Selection.getSelection().getNotWatchedMovies(limit);
-            case FAMOUS -> Selection.getSelection().getBestRated(limit);
+            case SHORTLY_SAVED -> Selection.getINSTANCE().getShortlyAdded(limit);
+            case MY_WATCHLIST -> Selection.getINSTANCE().getWatchlist();
+            case SEEN -> Selection.getINSTANCE().getWatchedMovies(limit);
+            case NOT_SEEN -> Selection.getINSTANCE().getNotWatchedMovies(limit);
+            case FAMOUS -> Selection.getINSTANCE().getBestRated(limit);
         };
     }
 }

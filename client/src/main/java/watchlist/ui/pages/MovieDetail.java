@@ -1,5 +1,8 @@
 package watchlist.ui.pages;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -13,23 +16,21 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import watchlist.Main;
 import watchlist.forServer.models.MovieInfos;
-import watchlist.forServer.serverConn.Insertion;
 import watchlist.forServer.serverConn.Selection;
+import watchlist.request.SaveMovie;
 
 public class MovieDetail extends StackPane {
     private MovieInfos movieInfos;
-    private boolean isSaved = false;
-    private double contentWidth;
+    private BooleanProperty isSaved = new SimpleBooleanProperty();
     private BorderPane borderPane;
 
     public MovieDetail(MovieInfos movieInfos) {
         this.movieInfos = movieInfos;
-        this.contentWidth = contentWidth;
         initContent();
     }
 
     public void initContent() {
-        //isSaved = saved();
+        isSaved.set(isSaved());
         borderPane = new BorderPane();
         this.getStyleClass().add("content");
         this.getChildren().add(borderPane);
@@ -48,11 +49,12 @@ public class MovieDetail extends StackPane {
         Label rating = new Label("IMDB Bewertung: " + movieInfos.getImdbRatin());
         Label year = new Label("Jahr: " + movieInfos.getYear());
 
-        String bStr = !isSaved ? "Speichern" : "Löschen";
+        String bStr = isSaved.get() ? "Löschen" : "Speichern";
         HBox hb = new HBox();
         Button saveForLater = new Button(bStr);
         Button trailerB = new Button("Trailer anschauen");
         CheckBox seenCheckBox = new CheckBox("Schon gesehen");
+        seenCheckBox.selectedProperty().bind(isSaved);
         hb.getChildren().addAll(saveForLater, seenCheckBox, trailerB);
         hb.setAlignment(Pos.CENTER);
         hb.setSpacing(20);
@@ -61,7 +63,17 @@ public class MovieDetail extends StackPane {
         seenCheckBox.getStyleClass().add("seenCheckBox");
 
         saveForLater.setOnAction(actionEvent -> {
-            //saveOrDelete();
+            try {
+                var response = SaveMovie.saveMovie(movieInfos, Main.getUserId(), !isSaved.get());
+
+                if (response.getStatus() == 200) {
+                    isSaved.set(!isSaved.get());
+                    saveForLater.setText(isSaved.get() ? "Löschen" : "Speichern");
+                }
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+
         });
 
         trailerB.setOnAction(actionEvent -> {
@@ -136,16 +148,8 @@ public class MovieDetail extends StackPane {
         });
     }
 
-    private void saveOrDelete() {
-        if (isSaved) {
-            Insertion.getInsertion().persist(movieInfos);
-        } else {
-            Insertion.getInsertion().delete(movieInfos);
-        }
-    }
-
     private boolean isSaved() {
-        return Selection.getSelection().isSaved(movieInfos.getId());
+        return Selection.getINSTANCE().isSaved(movieInfos.getId());
     }
 
     public MovieInfos getMovieInfos() {

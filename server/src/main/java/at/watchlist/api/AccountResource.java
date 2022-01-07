@@ -1,7 +1,7 @@
 package at.watchlist.api;
 
-import at.watchlist.db.entities.Account;
-import at.watchlist.db.entities.MovieInfos;
+import at.watchlist.entities.Account;
+import at.watchlist.entities.MovieInfos;
 import at.watchlist.models.AccountDTO;
 import at.watchlist.workloads.account.AccountServiceImpl;
 
@@ -63,6 +63,16 @@ public class AccountResource {
     public Response addMovie(@PathParam("accountId") Long accountId, MovieInfos movieInfos) {
         if (accountId != null && movieInfos != null) {
             return (accountService.addMovie(accountId, movieInfos) ? Response.ok() : Response.status(404)).build();
+        }
+        return Response.status(404).build();
+    }
+
+    @DELETE
+    @Path("{accountId}/movie")
+    @Transactional
+    public Response removeMovie(@PathParam("accountId") Long accountId, String movieId) {
+        if (accountId != null && movieId != null) {
+            return (accountService.removeSavedMovie(accountId, movieId) ? Response.ok() : Response.status(404)).build();
         }
         return Response.status(404).build();
     }

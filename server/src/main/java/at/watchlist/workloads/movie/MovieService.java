@@ -1,6 +1,6 @@
 package at.watchlist.workloads.movie;
 
-import at.watchlist.db.entities.MovieInfos;
+import at.watchlist.entities.MovieInfos;
 
 import java.util.List;
 

@@ -1,61 +1,18 @@
 package at.watchlist.workloads.account;
 
-import at.watchlist.db.entities.Account;
+import at.watchlist.entities.Account;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import java.util.List;
 
 @ApplicationScoped
-public class AccountRepoImpl implements AccountRepo {
-    @Inject
-    private EntityManager entityManager;
+public class AccountRepoImpl implements PanacheRepository<Account> {
 
-    public AccountRepoImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public Account findByName(String username) {
+        return find("username", username).stream().findFirst().orElse(null);
     }
 
-    @Override
-    public List<Account> getAll() {
-        return entityManager.createQuery("select a from Account a", Account.class).getResultList();
-    }
-
-    @Override
-    public Account get(Long id) {
-        TypedQuery<Account> query = entityManager.createQuery("select a from Account a where a.id = :id", Account.class);
-        query.setParameter("id", id);
-        return query.getResultStream().findFirst().orElse(null);
-    }
-
-    public Account get(String username) {
-        TypedQuery<Account> query = entityManager.createQuery("select a from Account a where a.username = :username", Account.class);
-        query.setParameter("username", username);
-        return query.getResultStream().findFirst().orElse(null);
-    }
-
-    @Override
-    public void add(Account account) {
-        entityManager.persist(account);
-    }
-
-    @Override
-    public void remove(Account account) {
-        entityManager.remove(account);
-    }
-
-    @Override
-    public void update(Account account) {
-        entityManager.merge(account);
-    }
-
-    @Override
     public boolean usernameExists(String s) {
-        Query query = entityManager.createQuery("select a from Account a where a.username = :username");
-        query.setParameter("username", s);
-        var r = query.getResultList();
-        return query.getResultList().size() > 0;
+        return findByName(s) != null;
     }
 }

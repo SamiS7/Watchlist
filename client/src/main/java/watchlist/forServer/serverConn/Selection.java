@@ -6,14 +6,14 @@ import watchlist.forServer.models.MovieInfos;
 import java.util.List;
 
 public class Selection {
-    private static Selection selection;
+    private static Selection INSTANCE;
     private Long userId = Main.getUserId();
 
     public Selection() {
     }
 
-    public static Selection getSelection() {
-        return selection != null ? selection : new Selection();
+    public static Selection getINSTANCE() {
+        return INSTANCE != null ? INSTANCE : new Selection();
     }
 
 

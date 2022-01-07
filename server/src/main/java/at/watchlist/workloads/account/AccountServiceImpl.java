@@ -1,10 +1,14 @@
 package at.watchlist.workloads.account;
 
-import at.watchlist.db.entities.Account;
-import at.watchlist.db.entities.MovieInfos;
+import at.watchlist.entities.Account;
+import at.watchlist.entities.MovieId;
+import at.watchlist.entities.MovieInfos;
+import at.watchlist.entities.SavedMovie;
 import at.watchlist.models.AccountDTO;
 import at.watchlist.models.LogInModel;
+import at.watchlist.workloads.movie.MovieRepoImpl;
 import at.watchlist.workloads.movie.MovieServiceImpl;
+import at.watchlist.workloads.movie.SavedMovieRepoImpl;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,22 +21,28 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepoImpl accountRepo;
     @Inject
     private MovieServiceImpl movieService;
+    @Inject
+    MovieRepoImpl movieRepo;
+    @Inject
+    private SavedMovieRepoImpl savedMovieRepo;
 
-    public AccountServiceImpl(AccountRepoImpl accountRepo, MovieServiceImpl movieService) {
+    public AccountServiceImpl(AccountRepoImpl accountRepo, MovieServiceImpl movieService, MovieRepoImpl movieRepo, SavedMovieRepoImpl savedMovieRepo) {
         this.accountRepo = accountRepo;
         this.movieService = movieService;
+        this.movieRepo = movieRepo;
+        this.savedMovieRepo = savedMovieRepo;
     }
 
     @Override
     public List<Account> getAll() {
-        var r = accountRepo.getAll();
+        var r = accountRepo.findAll().list();
         r.stream().forEach(account -> account.setPassword(null));
         return r;
     }
 
     @Override
     public Account get(Long id) {
-        var a = accountRepo.get(id);
+        var a = accountRepo.findById(id);
         a.setPassword(null);
         return a;
     }
@@ -44,11 +54,11 @@ public class AccountServiceImpl implements AccountService {
             if (s.length() <= 0) {
                 Account account = new Account(accountDTO.getUsername(), accountDTO.getPassword());
                 account.setPassword(BCrypt.hashpw(accountDTO.getPassword(), BCrypt.gensalt()));
-                accountRepo.add(account);
+                accountRepo.persist(account);
 
                 Account a = copyAccount(account);
                 return giveSuccessLogInModel(a, s);
-            } else return giveUnSuccessLogInModel( s);
+            } else return giveUnSuccessLogInModel(s);
         }
 
         return giveUnSuccessLogInModel("Der Username muss mind. 3 und Passwort 5 Zeichen haben!");
@@ -64,7 +74,7 @@ public class AccountServiceImpl implements AccountService {
             return giveUnSuccessLogInModel("Der Username muss mind. 3 und Passwort 5 Zeichen haben!");
         }
 
-        Account account = accountRepo.get(accountDTO.getUsername());
+        Account account = accountRepo.findByName(accountDTO.getUsername());
         if (account != null && checkPassword(accountDTO.getPassword(), account.getPassword())) {
             return giveSuccessLogInModel(copyAccount(account), "");
         }
@@ -73,9 +83,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean remove(Long id) {
-        Account account = accountRepo.get(id);
+        Account account = accountRepo.findById(id);
         if (account != null) {
-            accountRepo.remove(account);
+            accountRepo.delete(account);
             return true;
         }
         return false;
@@ -94,7 +104,7 @@ public class AccountServiceImpl implements AccountService {
         }
         String v = validAccount(account);
         if (account != null || v.length() <= 0) {
-            accountRepo.update(account);
+            accountRepo.getEntityManager().merge(account);
             return v;
         }
 
@@ -103,12 +113,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean addMovie(Long accountId, MovieInfos movieInfos) {
-        Account account = accountRepo.get(accountId);
+        Account account = accountRepo.findById(accountId);
 
         if (account != null && movieInfos != null) {
-            movieService.add(movieInfos);
+            if (movieService.get(movieInfos.getId()) == null) {
+                movieService.add(movieInfos);
+            }
             account.addMovies(movieInfos);
-            accountRepo.update(account);
+            accountRepo.persist(account);
             return true;
         }
         return false;
@@ -116,13 +128,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean removeSavedMovie(Long accountId, String movieId) {
-        Account account = accountRepo.get(accountId);
+        Account account = accountRepo.findById(accountId);
         MovieInfos movieInfos = movieService.get(movieId);
 
         if (account != null && movieInfos != null) {
-            account.removeMovie(movieInfos);
-            accountRepo.update(account);
-            return true;
+            MovieId movieId1 = new MovieId(account, movieInfos);
+            SavedMovie savedMovie = savedMovieRepo.findById(movieId1);
+            if (savedMovie != null) {
+                account.removeMovie(savedMovie);
+                savedMovieRepo.delete(savedMovie);
+                accountRepo.persist(account);
+                return true;
+            }
         }
         return false;
     }
@@ -162,7 +179,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public boolean checkPassword(String given, Long id) {
-        return checkPassword(given, accountRepo.get(id).getPassword());
+        return checkPassword(given, accountRepo.findById(id).getPassword());
     }
 
     public boolean checkPassword(String given, String password) {

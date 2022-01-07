@@ -1,6 +1,6 @@
 package at.watchlist.workloads.movie;
 
-import at.watchlist.db.entities.MovieInfos;
+import at.watchlist.entities.MovieInfos;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -17,18 +17,18 @@ public class MovieServiceImpl implements MovieService{
 
     @Override
     public List<MovieInfos> getAll() {
-        return movieRepo.getAll();
+        return movieRepo.findAll().list();
     }
 
     @Override
     public MovieInfos get(String id) {
-        return movieRepo.get(id);
+        return movieRepo.findById(id);
     }
 
     @Override
     public boolean add(MovieInfos movieInfos) {
-        if (movieRepo.get(movieInfos.getId()) == null) {
-            movieRepo.add(movieInfos);
+        if (movieRepo.findById(movieInfos.getId()) == null) {
+            movieRepo.persist(movieInfos);
             return true;
         }
         return false;
@@ -37,7 +37,7 @@ public class MovieServiceImpl implements MovieService{
     @Override
     public boolean update(MovieInfos movieInfos) {
         if (movieInfos != null) {
-            movieRepo.update(movieInfos);
+            movieRepo.getEntityManager().merge(movieInfos);
             return true;
         }
         return false;

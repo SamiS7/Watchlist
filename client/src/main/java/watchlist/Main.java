@@ -23,11 +23,11 @@ import java.util.List;
 
 public class Main extends Application {
     private static Long userId = -1L;
-    private Integer width = 1200;
-    private Integer height = 700;
+    private final Integer width = 1200;
+    private final Integer height = 700;
     private Node currentPage;
     private HBox root = new HBox();
-    private String serverUrl = "http://localhost:8080";
+    private static String serverUrl = "http://localhost:8080";
 
     @Override
     public void start(Stage stage) {
@@ -38,6 +38,9 @@ public class Main extends Application {
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
         stage.setTitle("Watchlist");
+
+        LogIn.initObjectMapper();
+
         stage.show();
     }
 
@@ -56,10 +59,9 @@ public class Main extends Application {
         Button myWatchlistB = new Button("Meine Merkliste");
         Button seenB = new Button("Gesehen");
         Button notSeenB = new Button("Nicht gesehen");
-        Button famousB = new Button("Beliebt");
         Button searchB = new Button("Suchen");
 
-        VBox v1 = new VBox(homeB, searchB, myWatchlistB, seenB, notSeenB, famousB);
+        VBox v1 = new VBox(homeB, searchB, myWatchlistB, seenB, notSeenB);
 
         ImageView profileIV = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/profile.png")));
         profileIV.setPreserveRatio(true);
@@ -121,7 +123,7 @@ public class Main extends Application {
         vBox.getStyleClass().add("profileMenu");
 
         b1.setOnAction(actionEvent -> {
-            showLogInDialog(true, vBox);
+            showLogInDialog(false, vBox);
         });
 
         for (Button b : List.of(b1, b2)) {
@@ -181,7 +183,6 @@ public class Main extends Application {
 
         dialog.setResultConverter(buttonType -> buttonType.equals(logInBT) ? new Account(name.getText().trim(), password.getText().trim()) : null);
 
-        LogIn.initObjectMapper();
         logInB.setOnAction(actionEvent -> {
             try {
                 Account account = dialog.getResult();
@@ -234,6 +235,10 @@ public class Main extends Application {
 
     public static void setUserId(Long userId) {
         Main.userId = userId;
+    }
+
+    public static String getServerUrl() {
+        return serverUrl;
     }
 
     public static void main(String[] args) {

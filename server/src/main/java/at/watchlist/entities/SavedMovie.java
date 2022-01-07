@@ -1,4 +1,4 @@
-package at.watchlist.db.entities;
+package at.watchlist.entities;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

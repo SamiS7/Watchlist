@@ -1,6 +1,6 @@
 package at.watchlist.models;
 
-import at.watchlist.db.entities.Account;
+import at.watchlist.entities.Account;
 
 public class LogInModel {
     private Account account;
