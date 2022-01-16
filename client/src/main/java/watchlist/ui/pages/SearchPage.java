@@ -1,6 +1,5 @@
 package watchlist.ui.pages;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
@@ -9,7 +8,6 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -18,11 +16,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import watchlist.forServer.models.MovieInfos;
 import watchlist.request.IMDBRequest;
 import watchlist.ui.components.AlertError;
-import watchlist.ui.components.MovieInfoForImdbO;
-import watchlist.ui.components.MovieInfoForImdbU;
 
 public class SearchPage extends VBox {
     private ScrollPane scrollPane;
@@ -92,8 +87,8 @@ public class SearchPage extends VBox {
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
 
-        Task<JsonObject> taskJson = IMDBRequest.request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
-        //Task<JsonObject> taskJson = SyncRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
+        //Task<JsonObject> taskJson = IMDBRequest.request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
+        Task<JsonObject> taskJson = IMDBRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
 
         taskJson.setOnSucceeded(action -> {
             Task task = new Task() {
@@ -105,10 +100,10 @@ public class SearchPage extends VBox {
                         double ww = ((tilePane.getWidth() - (25 * w)) / Math.round(w)) - 10;
                         double dh = (ww - 236) * 1.36;
 
-                        var arr = taskJson.get().getAsJsonArray("results");
-                        if (arr.size() > 0) {
-                            for (JsonElement j : arr) {
-                                //for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
+                        //var arr = taskJson.get().getAsJsonArray("results");
+                        //if (arr.size() > 0) {
+                            //for (JsonElement j : arr) {
+                                for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
                                 Image poster = new Image(((JsonObject) j).get("image").getAsString());
                                 ImageView imageView = new ImageView(poster);
 
@@ -127,13 +122,13 @@ public class SearchPage extends VBox {
                                     }
                                 });
                             }
-                        } else {
+                        /*} else {
                             Label msgL = new Label("Kein Treffer gefunden!");
                             msgL.getStyleClass().add("msgL");
                             Platform.runLater(() -> {
                                 tilePane.getChildren().add(msgL);
                             });
-                        }
+                        }*/
                     } catch (Exception e) {
                         new AlertError("Technische Probleme", " Es sind technische Probleme aufgetreten. Versuchen es erneut!");
                         e.printStackTrace();
@@ -149,54 +144,9 @@ public class SearchPage extends VBox {
         return tilePane;
     }
 
-    private <T> T asMovieInfo(JsonObject jsonObject, Class<T> classOfT) {
-        return new Gson().fromJson(jsonObject, classOfT);
-    }
+    public void showMovieDetail(String movieId) {
+        MovieDetail.showMovieDetail(movieId, this);
 
-    private void showMovieDetail(String pId) {
-        Task<JsonObject> jo = IMDBRequest.request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
-
-        //Task<JsonObject> jo = SyncRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
-
-
-        jo.setOnSucceeded(action -> {
-
-
-            MovieInfoForImdbO m = null;
-            try {
-                m = asMovieInfo(jo.get(), MovieInfoForImdbO.class);
-            } catch (Exception e) {
-                new AlertError("Server Probleme", "Die Details des gewünschten Films kann nicht aufgerufen werden!");
-                e.printStackTrace();
-            }
-
-            /*
-            MovieInfoForImdbU m = null;
-            try {
-                m = asMovieInfo(jo.get(), MovieInfoForImdbU.class);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
-
-            MovieDetail movieDetail = new MovieDetail(convertToMovieInfo(m));
-
-            ((HBox) root).getChildren().remove(this);
-            ((HBox) root).getChildren().add(movieDetail);
-
-        });
-    }
-
-    private MovieInfos convertToMovieInfo(Object o) {
-        if (o instanceof MovieInfoForImdbO m) {
-            return new MovieInfos(m.getId(), m.getTitle(), m.getYear(), m.getPlot(), m.getType(), m.getGenres(),
-                    m.getStars(), m.getImage(), m.getTrailer().getLinkEmbed(), m.getImDbRatin());
-        } else if (o instanceof MovieInfoForImdbU m) {
-            return new MovieInfos(m.getId(), m.getTitle(), m.getYear(), m.getPlot(), null, null,
-                    null, m.getPoster(), "https://www.imdb.com/video/imdb/" + m.getTrailer().getId() + "/imdb/embed", m.getRating());
-        }
-        return null;
     }
 
     public String getSearchStr() {

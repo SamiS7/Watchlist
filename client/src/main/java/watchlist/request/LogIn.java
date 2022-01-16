@@ -1,6 +1,7 @@
 package watchlist.request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
@@ -20,7 +21,7 @@ public class LogIn {
     public static void initObjectMapper() {
         Unirest.setObjectMapper(new ObjectMapper() {
             com.fasterxml.jackson.databind.ObjectMapper mapper
-                    = new com.fasterxml.jackson.databind.ObjectMapper();
+                    = new com.fasterxml.jackson.databind.ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
             public String writeValue(Object value) {
                 try {

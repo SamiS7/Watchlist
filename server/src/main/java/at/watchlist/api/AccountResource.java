@@ -2,12 +2,12 @@ package at.watchlist.api;
 
 import at.watchlist.entities.Account;
 import at.watchlist.entities.MovieInfos;
+import at.watchlist.entities.Watchlist;
 import at.watchlist.models.AccountDTO;
 import at.watchlist.workloads.account.AccountServiceImpl;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
@@ -44,21 +44,6 @@ public class AccountResource {
         var response = accountService.logIn(accountDTO);
         return (response.isSuccess() ? Response.ok(response) : Response.status(404)).entity((response)).build();
     }
-
-    /*
-    @PUT
-    @Transactional
-    public Response updateAccount(Account account, String oldPassword) {
-        String s = accountService.update(account, oldPassword);
-        return (s.length() <= 0 ? Response.ok() : Response.status(404, s)).build();
-    }
-
-    @DELETE
-    @Transactional
-    public Response removeAccount(Long id) {
-        return accountService.remove(id) ? Response.ok().build() : Response.status(404).build();
-    }
-    */
     
     @POST
     @Path("{accountId}/movie")
@@ -66,6 +51,16 @@ public class AccountResource {
     public Response addMovie(@PathParam("accountId") Long accountId, MovieInfos movieInfos) {
         if (accountId != null && movieInfos != null) {
             return (accountService.addMovie(accountId, movieInfos) ? Response.ok() : Response.status(404)).build();
+        }
+        return Response.status(404).build();
+    }
+
+    @PUT
+    @Path("/movie")
+    @Transactional
+    public Response updateWatchlist(Watchlist watchlist) {
+        if (watchlist != null) {
+            return (accountService.updateWatchlist(watchlist) ? Response.ok() : Response.status(404)).build();
         }
         return Response.status(404).build();
     }

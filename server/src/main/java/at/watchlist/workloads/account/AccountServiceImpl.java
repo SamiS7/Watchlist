@@ -3,12 +3,12 @@ package at.watchlist.workloads.account;
 import at.watchlist.entities.Account;
 import at.watchlist.entities.MovieId;
 import at.watchlist.entities.MovieInfos;
-import at.watchlist.entities.SavedMovie;
+import at.watchlist.entities.Watchlist;
 import at.watchlist.models.AccountDTO;
 import at.watchlist.models.LogInModel;
 import at.watchlist.workloads.movie.MovieRepoImpl;
 import at.watchlist.workloads.movie.MovieServiceImpl;
-import at.watchlist.workloads.movie.SavedMovieRepoImpl;
+import at.watchlist.workloads.movie.WatchlistRepoImpl;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -24,9 +24,9 @@ public class AccountServiceImpl implements AccountService {
     @Inject
     MovieRepoImpl movieRepo;
     @Inject
-    private SavedMovieRepoImpl savedMovieRepo;
+    private WatchlistRepoImpl savedMovieRepo;
 
-    public AccountServiceImpl(AccountRepoImpl accountRepo, MovieServiceImpl movieService, MovieRepoImpl movieRepo, SavedMovieRepoImpl savedMovieRepo) {
+    public AccountServiceImpl(AccountRepoImpl accountRepo, MovieServiceImpl movieService, MovieRepoImpl movieRepo, WatchlistRepoImpl savedMovieRepo) {
         this.accountRepo = accountRepo;
         this.movieService = movieService;
         this.movieRepo = movieRepo;
@@ -89,9 +89,22 @@ public class AccountServiceImpl implements AccountService {
             if (movieService.get(movieInfos.getId()) == null) {
                 movieService.add(movieInfos);
             }
-            account.addMovies(movieInfos);
+            account.addMovie(movieInfos);
             accountRepo.getEntityManager().merge(account);
             return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateWatchlist(Watchlist watchlist) {
+        Watchlist w = savedMovieRepo.findById(watchlist.getMovieId());
+
+        if (w != null) {
+            w.setLiked(watchlist.getLiked());
+            w.setSeen(watchlist.getSeen());
+
+            savedMovieRepo.persist(w);
         }
         return false;
     }
@@ -103,7 +116,7 @@ public class AccountServiceImpl implements AccountService {
 
         if (account != null && movieInfos != null) {
             MovieId movieId1 = new MovieId(account, movieInfos);
-            SavedMovie savedMovie = savedMovieRepo.findById(movieId1);
+            Watchlist savedMovie = savedMovieRepo.findById(movieId1);
             if (savedMovie != null) {
                 account.removeMovie(savedMovie);
                 savedMovieRepo.delete(savedMovie);
@@ -115,7 +128,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public SavedMovie getSavedMovie(Long accountId, String movieId) {
+    public Watchlist getSavedMovie(Long accountId, String movieId) {
         MovieId movieId1 = new MovieId(accountRepo.findById(accountId), movieService.get(movieId));
         return savedMovieRepo.findById(movieId1);
     }

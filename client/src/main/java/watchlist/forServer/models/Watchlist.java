@@ -1,26 +1,22 @@
 package watchlist.forServer.models;
 
-import java.time.LocalDateTime;
-
-public class SavedMovie {
+public class Watchlist {
     private MovieId movieId;
-    private LocalDateTime time;
     private Boolean seen;
     private Boolean liked;
 
-    public SavedMovie() {
+    public Watchlist() {
     }
 
-    public SavedMovie(MovieId movieId, LocalDateTime time, Boolean seen, Boolean liked) {
-        this.movieId = movieId;
-        this.time = time;
+    public Watchlist(Boolean seen, Boolean liked) {
         this.seen = seen;
         this.liked = liked;
     }
 
-    public SavedMovie(MovieId movieId, LocalDateTime time) {
+    public Watchlist(MovieId movieId, Boolean seen, Boolean liked) {
         this.movieId = movieId;
-        this.time = time;
+        this.seen = seen;
+        this.liked = liked;
     }
 
     public MovieId getMovieId() {
@@ -29,14 +25,6 @@ public class SavedMovie {
 
     public void setMovieId(MovieId movieId) {
         this.movieId = movieId;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalDateTime time) {
-        this.time = time;
     }
 
     public Boolean getSeen() {

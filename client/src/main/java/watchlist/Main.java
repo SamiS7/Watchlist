@@ -24,19 +24,20 @@ import watchlist.ui.pages.SearchPage;
 import java.util.List;
 
 public class Main extends Application {
-    private static LongProperty userId = new SimpleLongProperty(-1);
+    //private static LongProperty userId = new SimpleLongProperty(-1);
+    private static LongProperty userId = new SimpleLongProperty(1);
+    private static Account account;
     private final Integer width = 1200;
     private final Integer height = 800;
     private Node currentPage;
-    private HBox root = new HBox();
+    private static HBox root = new HBox();
     private static String serverUrl = "http://localhost:8080";
 
     @Override
     public void start(Stage stage) {
-        VBox menu = getMenu();
+        getMenu();
 
         root.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-        root.getChildren().addAll(menu, currentPage);
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
         stage.setTitle("Watchlist");
@@ -46,7 +47,7 @@ public class Main extends Application {
         stage.show();
     }
 
-    public VBox getMenu() {
+    public void getMenu() {
         VBox menu = new VBox();
         menu.getStyleClass().add("menu");
         Image menuIcon = new Image(Main.class.getResourceAsStream("/icons/menuIconw.png"));
@@ -97,23 +98,27 @@ public class Main extends Application {
             }
         });
 
-        HomePage homePage = null;
-        SearchPage searchPage = new SearchPage("game", root);
-        searchB.getStyleClass().add("active");
-        currentPage = searchPage;
+        HomePage homePage = new HomePage();
+        //SearchPage searchPage = new SearchPage("game", root);
+        SearchPage searchPage = null;
+        //searchB.getStyleClass().add("active");
+        changeCurrentPage(new HomePage(), menu);
 
         homeB.setOnAction(actionEvent -> {
-            currentPage = homePage == null ? new HomePage() : homePage;
-            root.getChildren().setAll(menu, currentPage);
-            homeB.getStyleClass().add("active");
+            changeCurrentPage(new HomePage(), menu);
         });
         searchB.setOnAction(actionEvent -> {
-            currentPage = searchPage == null ? new SearchPage() : searchPage;
-            root.getChildren().setAll(menu, currentPage);
-            searchB.getStyleClass().add("active");
+            changeCurrentPage(new SearchPage(), menu);
         });
+    }
 
-        return menu;
+    public void changeCurrentPage(Node newPage, Node menu) {
+        if (currentPage != null) {
+            currentPage.getStyleClass().remove("active");
+        }
+        currentPage = newPage;
+        root.getChildren().setAll(menu, currentPage);
+        newPage.getStyleClass().add("active");
     }
 
     public VBox getProfileContent() {
@@ -211,6 +216,7 @@ public class Main extends Application {
                     dialog.show();
                 } else {
                     var a = response.getBody().getAccount();
+                    this.account = a;
                     userId.set(a.getId());
                     Label username = new Label("User: " + a.getUsername());
                     username.getStyleClass().add("usernameL");
@@ -234,8 +240,16 @@ public class Main extends Application {
         return userId;
     }
 
+    public static Account getAccount() {
+        return account;
+    }
+
     public static String getServerUrl() {
         return serverUrl;
+    }
+
+    public static HBox getRoot() {
+        return root;
     }
 
     public static void main(String[] args) {

@@ -6,14 +6,14 @@ import watchlist.enums.ListCategory;
 import watchlist.ui.components.MovieRow;
 
 public class HomePage extends VBox {
-    private static int rowLimit = 5;
+    private static int rowLimit = 10;
 
     public HomePage() {
         VBox content = new VBox();
         this.getChildren().add(content);
 
         content.getStyleClass().add("content");
-        content.getChildren().addAll(new MovieRow(ListCategory.SHORTLY_SAVED, rowLimit));
+        content.getChildren().addAll(new MovieRow(ListCategory.SHORTLY_SAVED, rowLimit, this));
     }
 
 }

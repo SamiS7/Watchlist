@@ -1,6 +1,5 @@
 package watchlist.forServer.models;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,7 @@ public class Account {
     private Long id;
     private String username;
     private String password;
-    private List<SavedMovie> movies = new ArrayList<>();
+    private List<Watchlist> movies = new ArrayList<>();
     private List<Reminder> reminders = new ArrayList<>();
     private List<SearchHistory> searchHistories = new ArrayList<>();
 
@@ -20,32 +19,11 @@ public class Account {
         this.password = password;
     }
 
-    public void addMovies(MovieInfos movieInfos) {
-        MovieId movieId = new MovieId(this, movieInfos);
-        SavedMovie savedMovie = new SavedMovie(movieId, LocalDateTime.now(), false, false);
-
-        this.movies.add(savedMovie);
-    }
-
-    public boolean removeMovie(MovieInfos movieInfos) {
-        return movies.remove(movieInfos);
-    }
-
-    public void addReminder(MovieInfos movieInfos, LocalDateTime time) {
-        Reminder reminder = new Reminder(this, movieInfos, time);
-        reminders.add(reminder);
-    }
-
-    public void addSearchHistory(String searchStr) {
-        SearchHistory searchHistory = new SearchHistory(this, searchStr);
-        searchHistories.add(searchHistory);
-    }
-
-    public List<SavedMovie> getMovies() {
+    public List<Watchlist> getMovies() {
         return movies;
     }
 
-    public void setMovies(List<SavedMovie> movies) {
+    public void setMovies(List<Watchlist> movies) {
         this.movies = movies;
     }
 

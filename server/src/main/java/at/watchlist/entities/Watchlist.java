@@ -5,24 +5,24 @@ import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Entity
-public class SavedMovie {
+public class Watchlist {
     @EmbeddedId
     private MovieId movieId;
     private LocalDateTime time;
     private Boolean seen;
     private Boolean liked;
 
-    public SavedMovie() {
+    public Watchlist() {
     }
 
-    public SavedMovie(MovieId movieId, LocalDateTime time, Boolean seen, Boolean liked) {
+    public Watchlist(MovieId movieId, LocalDateTime time, Boolean seen, Boolean liked) {
         this.movieId = movieId;
         this.time = time;
         this.seen = seen;
         this.liked = liked;
     }
 
-    public SavedMovie(MovieId movieId, LocalDateTime time) {
+    public Watchlist(MovieId movieId, LocalDateTime time) {
         this.movieId = movieId;
         this.time = time;
     }
