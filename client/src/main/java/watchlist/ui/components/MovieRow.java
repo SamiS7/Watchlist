@@ -60,6 +60,8 @@ public class MovieRow extends VBox {
     public ScrollPane getContent() {
         HBox h = new HBox();
         h.getStyleClass().add("imageBox");
+        ScrollPane scrollPane = new ScrollPane(h);
+
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
@@ -97,7 +99,6 @@ public class MovieRow extends VBox {
         th.setDaemon(true);
         th.start();
 
-        ScrollPane scrollPane = new ScrollPane(h);
         h.prefWidthProperty().bind(scrollPane.widthProperty());
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -108,7 +109,6 @@ public class MovieRow extends VBox {
     public List<MovieInfos> getMovieData() throws UnirestException {
         return switch (listCategory) {
             case SHORTLY_SAVED -> Selection.getINSTANCE().getShortlyAdded(0, limit);
-            case MY_WATCHLIST -> Selection.getINSTANCE().getWatchlist();
             case SEEN -> Selection.getINSTANCE().getWatchedMovies(0, limit);
             case NOT_SEEN -> Selection.getINSTANCE().getNotWatchedMovies(0, limit);
             case FAMOUS -> Selection.getINSTANCE().getBestRated(0, limit);

@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -87,8 +88,8 @@ public class SearchPage extends VBox {
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
 
-        //Task<JsonObject> taskJson = IMDBRequest.request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
-        Task<JsonObject> taskJson = IMDBRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
+        Task<JsonObject> taskJson = IMDBRequest.request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
+        //Task<JsonObject> taskJson = IMDBRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
 
         taskJson.setOnSucceeded(action -> {
             Task task = new Task() {
@@ -100,10 +101,10 @@ public class SearchPage extends VBox {
                         double ww = ((tilePane.getWidth() - (25 * w)) / Math.round(w)) - 10;
                         double dh = (ww - 236) * 1.36;
 
-                        //var arr = taskJson.get().getAsJsonArray("results");
-                        //if (arr.size() > 0) {
-                            //for (JsonElement j : arr) {
-                                for (JsonElement j : taskJson.get().getAsJsonArray("titles")) {
+                        var arr = taskJson.get().getAsJsonArray("results");
+                        //var arr = taskJson.get().getAsJsonArray("titles");
+                        if (arr.size() > 0) {
+                            for (JsonElement j : arr) {
                                 Image poster = new Image(((JsonObject) j).get("image").getAsString());
                                 ImageView imageView = new ImageView(poster);
 
@@ -122,13 +123,13 @@ public class SearchPage extends VBox {
                                     }
                                 });
                             }
-                        /*} else {
+                        } else {
                             Label msgL = new Label("Kein Treffer gefunden!");
                             msgL.getStyleClass().add("msgL");
                             Platform.runLater(() -> {
                                 tilePane.getChildren().add(msgL);
                             });
-                        }*/
+                        }
                     } catch (Exception e) {
                         new AlertError("Technische Probleme", " Es sind technische Probleme aufgetreten. Versuchen es erneut!");
                         e.printStackTrace();

@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -22,10 +23,10 @@ import watchlist.ui.pages.HomePage;
 import watchlist.ui.pages.SearchPage;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Main extends Application {
-    //private static LongProperty userId = new SimpleLongProperty(-1);
-    private static LongProperty userId = new SimpleLongProperty(1);
+    private static LongProperty userId = new SimpleLongProperty(-1);
     private static Account account;
     private final Integer width = 1200;
     private final Integer height = 800;
@@ -35,7 +36,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        getMenu();
+        initBody();
+
+        userId.addListener(observable -> initBody());
 
         root.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         Scene scene = new Scene(root, width, height);
@@ -47,7 +50,7 @@ public class Main extends Application {
         stage.show();
     }
 
-    public void getMenu() {
+    public void initBody() {
         VBox menu = new VBox();
         menu.getStyleClass().add("menu");
         Image menuIcon = new Image(Main.class.getResourceAsStream("/icons/menuIconw.png"));
@@ -59,12 +62,9 @@ public class Main extends Application {
         menuIconB.setGraphic(menuIV);
         menuIconB.getStyleClass().add("menuIcon");
         Button homeB = new Button("Startseite");
-        Button myWatchlistB = new Button("Meine Merkliste");
-        Button seenB = new Button("Gesehen");
-        Button notSeenB = new Button("Nicht gesehen");
         Button searchB = new Button("Suchen");
 
-        VBox v1 = new VBox(homeB, searchB, myWatchlistB, seenB, notSeenB);
+        VBox v1 = new VBox(homeB, searchB);
 
         ImageView profileIV = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/profile.png")));
         profileIV.setPreserveRatio(true);
@@ -98,17 +98,34 @@ public class Main extends Application {
             }
         });
 
-        HomePage homePage = new HomePage();
-        //SearchPage searchPage = new SearchPage("game", root);
-        SearchPage searchPage = null;
-        //searchB.getStyleClass().add("active");
+        AtomicReference<HomePage> homePage = new AtomicReference<>(new HomePage());
+        AtomicReference<SearchPage> searchPage = new AtomicReference<>();
         changeCurrentPage(new HomePage(), menu);
 
         homeB.setOnAction(actionEvent -> {
-            changeCurrentPage(new HomePage(), menu);
+            changeCurrentPage(homePage.get(), menu);
         });
         searchB.setOnAction(actionEvent -> {
-            changeCurrentPage(new SearchPage(), menu);
+            if (searchPage.get() == null) {
+                searchPage.set(new SearchPage());
+            }
+            changeCurrentPage(searchPage.get(), menu);
+        });
+
+        homeB.setOnMouseClicked(action -> {
+            if (action.getButton().equals(MouseButton.PRIMARY) && action.getClickCount() == 2) {
+                var v = new HomePage();
+                homePage.set(v);
+                changeCurrentPage(v, menu);
+            }
+        });
+
+        searchB.setOnMouseClicked(action -> {
+            if (action.getButton().equals(MouseButton.PRIMARY) && action.getClickCount() == 2) {
+                var v = new SearchPage();
+                searchPage.set(v);
+                changeCurrentPage(v, menu);
+            }
         });
     }
 
@@ -116,9 +133,9 @@ public class Main extends Application {
         if (currentPage != null) {
             currentPage.getStyleClass().remove("active");
         }
+        newPage.getStyleClass().add("active");
         currentPage = newPage;
         root.getChildren().setAll(menu, currentPage);
-        newPage.getStyleClass().add("active");
     }
 
     public VBox getProfileContent() {
@@ -130,7 +147,19 @@ public class Main extends Application {
         vBox.getStyleClass().add("profileMenu");
 
         b1.setOnAction(actionEvent -> {
-            showLogInDialog(true, vBox);
+            if (userId.get() == -1) {
+                showLogInDialog(false, vBox);
+            } else {
+                userId.set(-1);
+                b1.setText("Anmelden");
+                account = null;
+                vBox.getChildren().stream().filter(c -> {
+                    if (c instanceof Label) {
+                        vBox.getChildren().remove(c);
+                    }
+                    return false;
+                });
+            }
         });
 
         for (Button b : List.of(b1, b2)) {
@@ -146,11 +175,10 @@ public class Main extends Application {
         VBox vBox = new VBox(20);
         vBox.setStyle("-fx-alignment: CENTER;");
 
-        TextField name = new TextField("Sami");
+        TextField name = new TextField();
         name.setPromptText("Bentzername");
         PasswordField password = new PasswordField();
         password.setPromptText("Passwort");
-        password.setText("passw");
         Button signUpB = new Button(!signUp ? "Zum Registrieren" : "Zum Anmelden");
         signUpB.getStyleClass().add("signUpB");
         name.getStyleClass().add("userName");
@@ -232,8 +260,6 @@ public class Main extends Application {
                 new AlertError("Technische Probleme!", "Es sind technische Probleme aufgetreten. Versuchen es erneut!");
             }
         });
-
-        logInB.fireEvent(new ActionEvent());
     }
 
     public static LongProperty userIdProperty() {

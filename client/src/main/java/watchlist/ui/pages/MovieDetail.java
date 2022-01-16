@@ -216,14 +216,14 @@ public class MovieDetail extends StackPane {
     }
 
     public static void showMovieDetail(String pId, Node fromPage) {
-        //Task<JsonObject> jo = IMDBRequest.request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
+        Task<JsonObject> jo = IMDBRequest.request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
 
-        Task<JsonObject> jo = IMDBRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
+        //Task<JsonObject> jo = IMDBRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
 
 
         jo.setOnSucceeded(action -> {
 
-            /*
+
             MovieInfoForImdbO m = null;
             try {
                 m = asMovieInfo(jo.get(), MovieInfoForImdbO.class);
@@ -231,8 +231,8 @@ public class MovieDetail extends StackPane {
                 new AlertError("Server Probleme", "Die Details des gewünschten Films kann nicht aufgerufen werden!");
                 e.printStackTrace();
             }
-            */
 
+            /*
             MovieInfoForImdbU m = null;
             try {
                 m = asMovieInfo(jo.get(), MovieInfoForImdbU.class);
@@ -241,6 +241,7 @@ public class MovieDetail extends StackPane {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+             */
 
             MovieDetail movieDetail = new MovieDetail(convertToMovieInfo(m));
 

@@ -4,8 +4,7 @@ public enum ListCategory {
     SHORTLY_SAVED("Kürzlich gespeichert"),
     NOT_SEEN("Noch nicht gesehen"),
     SEEN ("Schon Gesehen"),
-    FAMOUS("Beliebt"),
-    MY_WATCHLIST("Meine Merkliste");
+    FAMOUS("Beliebt");
 
     private String titel;
 

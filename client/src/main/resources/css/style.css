@@ -199,14 +199,22 @@
     -fx-background-color: none;
 }
 
-.movieRow .scroll-bar {
+.scroll-bar {
     -fx-background-color: -menu-border-color;
 }
 
-.movieRow .scroll-bar .track {
+.scroll-bar .track {
     -fx-background-color: -menu-border-color;
 }
 
 .scroll-bar .thumb {
     -fx-background-color: -menu-hover-color;
+}
+
+.homePage {
+    -fx-spacing: 50;
+}
+
+.homePageContent {
+    -fx-background-color: -body-bgc;
 }

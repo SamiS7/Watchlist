@@ -28,4 +28,22 @@ public class MovieResource {
         var result = watchlistService.getShortlyAdded(id, start, end);
         return (result != null ? Response.ok(result) : Response.ok(new ArrayList<>())).build();
     }
+    @GET
+    @Path("/{accountId}/seen/{startIndex}/{endIndex}")
+    public Response getSeenMovies(@PathParam("accountId") Long id, @PathParam("startIndex") int start, @PathParam("endIndex") int end) {
+        var result = watchlistService.getSeen(id, start, end);
+        return (result != null ? Response.ok(result) : Response.ok(new ArrayList<>())).build();
+    }
+    @GET
+    @Path("/{accountId}/notSeen/{startIndex}/{endIndex}")
+    public Response getNotSeenMovies(@PathParam("accountId") Long id, @PathParam("startIndex") int start, @PathParam("endIndex") int end) {
+        var result = watchlistService.getNotSeen(id, start, end);
+        return (result != null ? Response.ok(result) : Response.ok(new ArrayList<>())).build();
+    }
+    @GET
+    @Path("/{accountId}/famous/{startIndex}/{endIndex}")
+    public Response getFamousMovies(@PathParam("accountId") Long id, @PathParam("startIndex") int start, @PathParam("endIndex") int end) {
+        var result = watchlistService.getFamous(id, start, end);
+        return (result != null ? Response.ok(result) : Response.ok(new ArrayList<>())).build();
+    }
 }
