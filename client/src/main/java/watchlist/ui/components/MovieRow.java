@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import watchlist.enums.ListCategory;
+import watchlist.enums.Category;
 import watchlist.forServer.models.MovieInfos;
 import watchlist.forServer.serverConn.Selection;
 import watchlist.ui.pages.MovieDetail;
@@ -19,45 +19,48 @@ import watchlist.ui.pages.MovieDetail;
 import java.util.List;
 
 public class MovieRow extends VBox {
-    private ListCategory listCategory;
-    private int limit;
+    private List<MovieInfos> movieInfos;
+    private Category category;
     private Node fromPage;
 
+
     //region constructor, getter & setter
-    public MovieRow(ListCategory listCategory, int limit, Node fromPage) {
-        this.listCategory = listCategory;
-        this.limit = limit;
+    public MovieRow(List<MovieInfos> movieInfos, Category category, Node fromPage) {
+        this.movieInfos = movieInfos;
         this.fromPage = fromPage;
+        this.category = category;
         initBox();
     }
 
-    public ListCategory getListCategory() {
-        return listCategory;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setListCategory(ListCategory listCategory) {
-        this.listCategory = listCategory;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public int getLimit() {
-        return limit;
+    public Node getFromPage() {
+        return fromPage;
     }
 
-    public void setLimit(int limit) {
-        this.limit = limit;
+    public void setFromPage(Node fromPage) {
+        this.fromPage = fromPage;
     }
+
     //endregion
 
-    public void initBox() {
-        Label titel = new Label(listCategory.getTitel());
+    private void initBox() {
+        Label titel = new Label(category.getTitel());
         ScrollPane scrollPane = getContent();
         scrollPane.setBackground(null);
 
         this.getChildren().addAll(titel, scrollPane);
         this.getStyleClass().add("movieRow");
+        this.setSpacing(5);
     }
 
-    public ScrollPane getContent() {
+    private ScrollPane getContent() {
         HBox h = new HBox();
         h.getStyleClass().add("imageBox");
         ScrollPane scrollPane = new ScrollPane(h);
@@ -65,9 +68,8 @@ public class MovieRow extends VBox {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                List<MovieInfos> movieData = getMovieData();
-                if (movieData.size() > 0) {
-                    for (MovieInfos m : movieData) {
+                if (movieInfos.size() > 0) {
+                    for (MovieInfos m : movieInfos) {
                         Image image = new Image(m.getPosterUrl());
                         ImageView imageView = new ImageView(image);
                         imageView.setPreserveRatio(true);
@@ -102,16 +104,21 @@ public class MovieRow extends VBox {
         h.prefWidthProperty().bind(scrollPane.widthProperty());
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setPrefSize(500, 325);
 
         return scrollPane;
     }
 
-    public List<MovieInfos> getMovieData() throws UnirestException {
-        return switch (listCategory) {
-            case SHORTLY_SAVED -> Selection.getINSTANCE().getShortlyAdded(0, limit);
-            case SEEN -> Selection.getINSTANCE().getWatchedMovies(0, limit);
-            case NOT_SEEN -> Selection.getINSTANCE().getNotWatchedMovies(0, limit);
-            case FAMOUS -> Selection.getINSTANCE().getBestRated(0, limit);
-        };
+    public static List<MovieInfos> getMovieData(Category listCategory) {
+        try {
+            return switch (listCategory) {
+                case SHORTLY_SAVED -> Selection.getINSTANCE().getShortlyAdded(0, 9);
+                case SEEN -> Selection.getINSTANCE().getWatchedMovies(0, 9);
+                case NOT_SEEN -> Selection.getINSTANCE().getNotWatchedMovies(0, 9);
+                case FAMOUS -> Selection.getINSTANCE().getBestRated(0, 9);
+            };
+        } catch (UnirestException e) {
+        }
+        return null;
     }
 }

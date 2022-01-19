@@ -1,6 +1,7 @@
 package at.watchlist.workloads.movie;
 
 import at.watchlist.entities.MovieInfos;
+import io.quarkus.panache.common.Sort;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -41,5 +42,10 @@ public class MovieServiceImpl implements MovieService{
             return true;
         }
         return false;
+    }
+
+    public List<MovieInfos> getFamous(int start, int end) {
+        var query = movieRepo.findAll(Sort.by("imdbRating").descending()).range(start, end);
+        return query.stream().toList();
     }
 }

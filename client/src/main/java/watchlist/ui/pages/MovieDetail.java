@@ -243,13 +243,16 @@ public class MovieDetail extends StackPane {
             }
              */
 
-            MovieDetail movieDetail = new MovieDetail(convertToMovieInfo(m));
-
-            Node root = Main.getRoot();
-            ((HBox) root).getChildren().remove(fromPage);
-            ((HBox) root).getChildren().add(movieDetail);
-
+            showMovieDetail(fromPage,convertToMovieInfo(m));
         });
+    }
+
+    public static void showMovieDetail(Node fromPage, MovieInfos movieInfos) {
+        MovieDetail movieDetail = new MovieDetail(movieInfos);
+
+        Node root = Main.getRoot();
+        ((HBox) root).getChildren().remove(fromPage);
+        ((HBox) root).getChildren().add(movieDetail);
     }
 
     private static <T> T asMovieInfo(JsonObject jsonObject, Class<T> classOfT) {

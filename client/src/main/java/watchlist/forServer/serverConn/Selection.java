@@ -38,7 +38,7 @@ public class Selection {
     }
 
     public List<MovieInfos> getBestRated(int start, int limit) throws UnirestException {
-        String url = Main.getServerUrl() + "/movie/" + Main.userIdProperty().get() + "/famous/" + start + "/" + start + limit;
+        String url = Main.getServerUrl() + "/movie/famous/" + start + "/" + start + limit;
         return makeRequest(url);
     }
 

@@ -11,6 +11,7 @@
     -search-button-color: #0077ff;
     -profile-menu-color: #333333;
     -usernameL-bgc: #414141;
+    -scroll-thumb-color: #000000;
 }
 
 .root {
@@ -201,6 +202,11 @@
 
 .scroll-bar {
     -fx-background-color: -menu-border-color;
+    -fx-opacity: .3;
+}
+
+.scroll-bar:hover {
+    -fx-opacity: 1;
 }
 
 .scroll-bar .track {
@@ -208,7 +214,7 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: -menu-hover-color;
+    -fx-background-color: -scroll-thumb-color;
 }
 
 .homePage {

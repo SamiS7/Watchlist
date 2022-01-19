@@ -1,6 +1,6 @@
 package watchlist.enums;
 
-public enum ListCategory {
+public enum Category {
     SHORTLY_SAVED("Kürzlich gespeichert"),
     NOT_SEEN("Noch nicht gesehen"),
     SEEN ("Schon Gesehen"),
@@ -8,7 +8,7 @@ public enum ListCategory {
 
     private String titel;
 
-    ListCategory(String titel) {
+    Category(String titel) {
         this.titel = titel;
     }
 

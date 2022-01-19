@@ -3,12 +3,13 @@ package watchlist.ui.pages;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import watchlist.Main;
-import watchlist.enums.ListCategory;
+import watchlist.enums.Category;
+import watchlist.forServer.models.MovieInfos;
 import watchlist.ui.components.MovieRow;
 
+import java.util.List;
+
 public class HomePage extends HBox {
-    private static int rowLimit = 10;
 
     public HomePage() {
         ScrollPane scrollPane = new ScrollPane();
@@ -25,10 +26,18 @@ public class HomePage extends HBox {
         this.getChildren().add(scrollPane);
         scrollPane.getStyleClass().add("scrollPane");
 
-        content.getChildren().addAll(new MovieRow(ListCategory.SHORTLY_SAVED, rowLimit, this),
-                new MovieRow(ListCategory.SEEN, rowLimit, this),
-                new MovieRow(ListCategory.NOT_SEEN, rowLimit, this),
-                new MovieRow(ListCategory.FAMOUS, rowLimit, this));
+        loadRow(Category.SHORTLY_SAVED, content);
+        loadRow(Category.FAMOUS, content);
+        loadRow(Category.SEEN, content);
+        loadRow(Category.NOT_SEEN, content);
+    }
+
+    private void loadRow(Category category, VBox content) {
+        List<MovieInfos> data = MovieRow.getMovieData(category);
+
+        if (data != null && data.size() > 0) {
+            content.getChildren().add(new MovieRow(data, category, this));
+        }
     }
 
 }

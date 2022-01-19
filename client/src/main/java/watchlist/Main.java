@@ -100,7 +100,9 @@ public class Main extends Application {
 
         AtomicReference<HomePage> homePage = new AtomicReference<>(new HomePage());
         AtomicReference<SearchPage> searchPage = new AtomicReference<>();
-        changeCurrentPage(new HomePage(), menu);
+        if (currentPage == null) {
+            changeCurrentPage(new HomePage(), menu);
+        }
 
         homeB.setOnAction(actionEvent -> {
             changeCurrentPage(homePage.get(), menu);
@@ -144,6 +146,13 @@ public class Main extends Application {
 
         VBox vBox = new VBox(b1, b2);
 
+        if (userId.get() > -1) {
+            Label username = new Label("User: " + this.account.getUsername());
+            username.getStyleClass().add("usernameL");
+            vBox.getChildren().add(0, username);
+        }
+
+
         vBox.getStyleClass().add("profileMenu");
 
         b1.setOnAction(actionEvent -> {
@@ -151,14 +160,6 @@ public class Main extends Application {
                 showLogInDialog(false, vBox);
             } else {
                 userId.set(-1);
-                b1.setText("Anmelden");
-                account = null;
-                vBox.getChildren().stream().filter(c -> {
-                    if (c instanceof Label) {
-                        vBox.getChildren().remove(c);
-                    }
-                    return false;
-                });
             }
         });
 
@@ -175,9 +176,10 @@ public class Main extends Application {
         VBox vBox = new VBox(20);
         vBox.setStyle("-fx-alignment: CENTER;");
 
-        TextField name = new TextField();
+        TextField name = new TextField("Sami");
         name.setPromptText("Bentzername");
         PasswordField password = new PasswordField();
+        password.setText("passw");
         password.setPromptText("Passwort");
         Button signUpB = new Button(!signUp ? "Zum Registrieren" : "Zum Anmelden");
         signUpB.getStyleClass().add("signUpB");
@@ -243,16 +245,8 @@ public class Main extends Application {
                     }
                     dialog.show();
                 } else {
-                    var a = response.getBody().getAccount();
-                    this.account = a;
-                    userId.set(a.getId());
-                    Label username = new Label("User: " + a.getUsername());
-                    username.getStyleClass().add("usernameL");
-
-                    var v = getProfileContent();
-                    v.getChildren().add(0, username);
-                    profileMenu.getChildren().setAll(v.getChildren());
-                    profileMenu.setVisible(true);
+                    this.account = response.getBody().getAccount();
+                    userId.set(this.account.getId());
                 }
 
             } catch (UnirestException e) {
@@ -260,6 +254,8 @@ public class Main extends Application {
                 new AlertError("Technische Probleme!", "Es sind technische Probleme aufgetreten. Versuchen es erneut!");
             }
         });
+
+        logInB.fireEvent(new ActionEvent());
     }
 
     public static LongProperty userIdProperty() {

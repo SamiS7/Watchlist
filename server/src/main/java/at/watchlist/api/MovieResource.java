@@ -41,9 +41,9 @@ public class MovieResource {
         return (result != null ? Response.ok(result) : Response.ok(new ArrayList<>())).build();
     }
     @GET
-    @Path("/{accountId}/famous/{startIndex}/{endIndex}")
-    public Response getFamousMovies(@PathParam("accountId") Long id, @PathParam("startIndex") int start, @PathParam("endIndex") int end) {
-        var result = watchlistService.getFamous(id, start, end);
+    @Path("/famous/{startIndex}/{endIndex}")
+    public Response getFamousMovies(@PathParam("startIndex") int start, @PathParam("endIndex") int end) {
+        var result = movieService.getFamous(start, end);
         return (result != null ? Response.ok(result) : Response.ok(new ArrayList<>())).build();
     }
 }
