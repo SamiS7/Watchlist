@@ -20,13 +20,14 @@ import javafx.scene.layout.VBox;
 import watchlist.request.IMDBRequest;
 import watchlist.ui.components.AlertError;
 
-public class SearchPage extends VBox {
+public class SearchPage extends VBox implements Page {
     private ScrollPane scrollPane;
     private String searchStr;
     private Node root;
 
     public SearchPage() {
-        initSearchBox();
+        addReloadEvent();
+        initBody();
     }
 
     public SearchPage(Node root) {
@@ -35,13 +36,14 @@ public class SearchPage extends VBox {
     }
 
     public SearchPage(String searchStr, Node root) {
+        this(root);
         this.searchStr = searchStr;
-        this.root = root;
-        initSearchBox();
-
     }
 
-    public void initSearchBox() {
+    @Override
+    public void initBody() {
+        this.getChildren().clear();
+
         HBox hb = new HBox();
         hb.getStyleClass().add("searchBox");
         TextField textField = new TextField();

@@ -1,9 +1,9 @@
-package watchlist.forServer.serverConn;
+package watchlist.request;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import watchlist.Main;
-import watchlist.forServer.models.MovieInfos;
+import watchlist.models.MovieInfos;
 
 import java.util.ArrayList;
 import java.util.Arrays;

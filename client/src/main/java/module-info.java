@@ -7,7 +7,7 @@ module client {
     requires httpclient;
 
     exports watchlist;
-    exports watchlist.forServer.models;
+    exports watchlist.models;
 
     opens watchlist;
     opens watchlist.ui.components;

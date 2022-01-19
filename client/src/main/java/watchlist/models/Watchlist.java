@@ -1,4 +1,4 @@
-package watchlist.forServer.models;
+package watchlist.models;
 
 public class Watchlist {
     private MovieId movieId;

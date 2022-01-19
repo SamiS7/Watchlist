@@ -4,8 +4,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import watchlist.Main;
-import watchlist.forServer.models.MovieInfos;
-import watchlist.forServer.models.Watchlist;
+import watchlist.models.MovieInfos;
+import watchlist.models.Watchlist;
 
 import java.io.InputStream;
 

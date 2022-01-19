@@ -6,8 +6,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import watchlist.forServer.models.Account;
-import watchlist.forServer.models.LogInModel;
+import watchlist.models.Account;
+import watchlist.models.LogInModel;
 
 public class LogIn {
 

@@ -12,8 +12,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import watchlist.enums.Category;
-import watchlist.forServer.models.MovieInfos;
-import watchlist.forServer.serverConn.Selection;
+import watchlist.models.MovieInfos;
+import watchlist.request.Selection;
 import watchlist.ui.pages.MovieDetail;
 
 import java.util.List;
@@ -118,6 +118,7 @@ public class MovieRow extends VBox {
                 case FAMOUS -> Selection.getINSTANCE().getBestRated(0, 9);
             };
         } catch (UnirestException e) {
+            e.printStackTrace();
         }
         return null;
     }

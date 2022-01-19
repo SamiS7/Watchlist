@@ -20,34 +20,35 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import watchlist.Main;
-import watchlist.forServer.models.MovieId;
-import watchlist.forServer.models.MovieInfos;
-import watchlist.forServer.models.Watchlist;
+import watchlist.models.MovieId;
+import watchlist.models.MovieInfos;
+import watchlist.models.Watchlist;
 import watchlist.request.IMDBRequest;
 import watchlist.request.MovieRequests;
 import watchlist.ui.components.AlertError;
 import watchlist.ui.components.MovieInfoForImdbO;
 import watchlist.ui.components.MovieInfoForImdbU;
 
-public class MovieDetail extends StackPane {
+public class MovieDetail extends StackPane implements Page {
     private MovieInfos movieInfos;
     private Watchlist savedMovie;
-    private Long userId = Main.userIdProperty().get();
+    private Long userId;
     private BooleanProperty isSaved = new SimpleBooleanProperty();
     private BooleanProperty seen = new SimpleBooleanProperty();
     private BorderPane borderPane;
 
     public MovieDetail(MovieInfos movieInfos) {
         this.movieInfos = movieInfos;
-        initContent();
+
+        addReloadEvent();
+        initBody();
     }
 
-    public void initContent() {
+    @Override
+    public void initBody() {
+        this.getChildren().clear();
+        this.userId = Main.userIdProperty().get();
         initSavedMovie();
-
-        Main.userIdProperty().addListener((observable, oldVal, newVal) -> {
-            initSavedMovie();
-        });
 
         borderPane = new BorderPane();
         this.getStyleClass().add("content");
@@ -207,6 +208,8 @@ public class MovieDetail extends StackPane {
             } catch (UnirestException e) {
                 updateProperties(false, false);
             }
+        } else {
+            updateProperties(false, false);
         }
     }
 
