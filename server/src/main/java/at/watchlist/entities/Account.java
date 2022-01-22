@@ -13,9 +13,9 @@ public class Account {
     @Column(unique = true)
     private String username;
     private String password;
-    @OneToMany(mappedBy = "movieId.account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "movieId.account", cascade = CascadeType.ALL)
     private Set<Watchlist> watchlists = new HashSet<>();
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "searchHistoryId.account", cascade = CascadeType.ALL)
     private Set<SearchHistory> searchHistories = new HashSet<>();
 
     public Account() {
@@ -37,9 +37,14 @@ public class Account {
         return watchlists.remove(movie);
     }
 
-    public void addSearchHistory(String searchStr) {
-        SearchHistory searchHistory = new SearchHistory(this, searchStr);
-        searchHistories.add(searchHistory);
+    public void addSearchHistory(SearchWord searchWord, boolean exists) {
+        SearchHistoryId searchHistoryId = new SearchHistoryId(this, searchWord);
+        SearchHistory searchHistory = exists ? this.searchHistories.stream()
+                .filter(s -> s.getSearchHistoryId().equals(searchHistoryId))
+                .findFirst().orElse(null)
+                : new SearchHistory(searchHistoryId);
+        searchHistory.setTime(LocalDateTime.now());
+        this.searchHistories.add(searchHistory);
     }
 
     public Set<Watchlist> getWatchlists() {

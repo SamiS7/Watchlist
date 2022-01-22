@@ -23,5 +23,5 @@ public interface AccountService {
 
     boolean removeSavedMovie(Long accountId, String MovieId);
 
-    Watchlist getSavedMovie(Long accountId, String movieId);
+    Watchlist getWatchlist(Long accountId, String movieId);
 }

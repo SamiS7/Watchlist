@@ -2,25 +2,24 @@ package at.watchlist.entities;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class MovieId implements Serializable {
+public class SearchHistoryId implements Serializable {
     @JsonbTransient
     @ManyToOne
     private Account account;
     @ManyToOne
-    private MovieInfos movieInfos;
+    private SearchWord searchWord;
 
-    public MovieId() {
+    public SearchHistoryId() {
     }
 
-    public MovieId(Account account, MovieInfos movieInfos) {
+    public SearchHistoryId(Account account, SearchWord searchWord) {
         this.account = account;
-        this.movieInfos = movieInfos;
+        this.searchWord = searchWord;
     }
 
     public Account getAccount() {
@@ -31,24 +30,24 @@ public class MovieId implements Serializable {
         this.account = account;
     }
 
-    public MovieInfos getMovieInfos() {
-        return movieInfos;
+    public SearchWord getSearchWord() {
+        return searchWord;
     }
 
-    public void setMovieInfos(MovieInfos movieInfos) {
-        this.movieInfos = movieInfos;
+    public void setSearchWord(SearchWord searchWord) {
+        this.searchWord = searchWord;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MovieId movieId = (MovieId) o;
-        return account.equals(movieId.account) && movieInfos.equals(movieId.movieInfos);
+        SearchHistoryId that = (SearchHistoryId) o;
+        return account.equals(that.account) && searchWord.equals(that.searchWord);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(account, movieInfos);
+        return Objects.hash(account, searchWord);
     }
 }

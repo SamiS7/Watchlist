@@ -1,53 +1,32 @@
 package at.watchlist.entities;
 
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 public class SearchHistory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @JsonbTransient
-    @ManyToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private Account account;
-    private String searchStr;
+    @EmbeddedId
+    private SearchHistoryId searchHistoryId;
     private LocalDateTime time;
 
     public SearchHistory() {
     }
 
-    public SearchHistory(Account account, String searchStr) {
-        this.id = id;
-        this.account = account;
-        this.searchStr = searchStr;
-        this.time = LocalDateTime.now();
+    public SearchHistory(SearchHistoryId searchHistoryId) {
+        this.searchHistoryId = searchHistoryId;
     }
 
-    public Long getId() {
-        return id;
+    public SearchHistory(SearchHistoryId searchHistoryId, LocalDateTime time) {
+        this.searchHistoryId = searchHistoryId;
+        this.time = time;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public SearchHistoryId getSearchHistoryId() {
+        return searchHistoryId;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public String getSearchStr() {
-        return searchStr;
-    }
-
-    public void setSearchStr(String searchStr) {
-        this.searchStr = searchStr;
+    public void setSearchHistoryId(SearchHistoryId searchHistoryId) {
+        this.searchHistoryId = searchHistoryId;
     }
 
     public LocalDateTime getTime() {

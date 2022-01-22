@@ -77,8 +77,8 @@ public class AccountResource {
 
     @GET
     @Path("{accountId}/{movieId}")
-    public Response getSavedMovie(@PathParam("accountId") Long accountId, @PathParam("movieId") String movieId) {
-        var movie = accountService.getSavedMovie(accountId, movieId);
+    public Response getWatchlist(@PathParam("accountId") Long accountId, @PathParam("movieId") String movieId) {
+        var movie = accountService.getWatchlist(accountId, movieId);
         return (movie != null ? Response.ok(movie) : Response.status(404)).build();
     }
 }

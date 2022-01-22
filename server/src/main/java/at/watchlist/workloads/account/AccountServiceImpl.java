@@ -128,7 +128,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Watchlist getSavedMovie(Long accountId, String movieId) {
+    public Watchlist getWatchlist(Long accountId, String movieId) {
         MovieId movieId1 = new MovieId(accountRepo.findById(accountId), movieService.get(movieId));
         return savedMovieRepo.findById(movieId1);
     }
