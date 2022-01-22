@@ -1,4 +1,4 @@
-package watchlist.ui.components;
+package watchlist.models.imdb;
 
 public class MovieInfoForImdbU {
     private String id, title, year, plot, poster;

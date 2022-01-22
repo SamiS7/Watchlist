@@ -2,7 +2,6 @@ package watchlist.ui.components;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,8 +22,6 @@ public class MovieRow extends VBox {
     private Category category;
     private Node fromPage;
 
-
-    //region constructor, getter & setter
     public MovieRow(List<MovieInfos> movieInfos, Category category, Node fromPage) {
         this.movieInfos = movieInfos;
         this.fromPage = fromPage;
@@ -32,30 +29,12 @@ public class MovieRow extends VBox {
         initBox();
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Node getFromPage() {
-        return fromPage;
-    }
-
-    public void setFromPage(Node fromPage) {
-        this.fromPage = fromPage;
-    }
-
-    //endregion
-
     private void initBox() {
-        Label titel = new Label(category.getTitel());
+        Label title = new Label(category.getTitel());
         ScrollPane scrollPane = getContent();
         scrollPane.setBackground(null);
 
-        this.getChildren().addAll(titel, scrollPane);
+        this.getChildren().addAll(title, scrollPane);
         this.getStyleClass().add("movieRow");
         this.setSpacing(5);
     }
@@ -65,41 +44,7 @@ public class MovieRow extends VBox {
         h.getStyleClass().add("imageBox");
         ScrollPane scrollPane = new ScrollPane(h);
 
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                if (movieInfos.size() > 0) {
-                    for (MovieInfos m : movieInfos) {
-                        Image image = new Image(m.getPosterUrl());
-                        ImageView imageView = new ImageView(image);
-                        imageView.setPreserveRatio(true);
-                        imageView.setFitHeight(300);
-
-                        Button button = new Button();
-                        button.setGraphic(imageView);
-                        button.setBackground(null);
-                        button.setOnAction(actionEvent -> {
-                            MovieDetail.showMovieDetail(m, fromPage);
-                        });
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                h.getChildren().add(button);
-                            }
-                        });
-                    }
-
-                } else {
-                    Label label = new Label("Nichts zu dieser Kategorie gefunden!");
-                    h.getChildren().add(label);
-                }
-                return null;
-            }
-        };
-
-        Thread th = new Thread(task);
-        th.setDaemon(true);
-        th.start();
+        initMovieRowContent(movieInfos, fromPage, h.getChildren(), h);
 
         h.prefWidthProperty().bind(scrollPane.widthProperty());
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -120,5 +65,51 @@ public class MovieRow extends VBox {
         } catch (UnirestException e) {
         }
         return null;
+    }
+
+    public static void initMovieRowContent(List<MovieInfos> movieInfosList, Node fromPage, List<Node> children, Node tilePane) {
+        new Thread(() -> {
+            if (movieInfosList.size() > 0) {
+                for (MovieInfos m : movieInfosList) {
+                    Image image = new Image(m.getPosterUrl());
+                    ImageView imageView = new ImageView(image);
+                    imageView.setPreserveRatio(true);
+                    imageView.setFitHeight(300);
+
+                    Button button = new Button();
+                    button.setGraphic(imageView);
+                    button.setBackground(null);
+                    button.setOnAction(actionEvent -> {
+                        MovieDetail.showMovieDetail(m, fromPage);
+                    });
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            children.add(button);
+                        }
+                    });
+                }
+
+            } else {
+                Label label = new Label("Nichts zu dieser Kategorie gefunden!");
+                children.add(label);
+            }
+        }).start();
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Node getFromPage() {
+        return fromPage;
+    }
+
+    public void setFromPage(Node fromPage) {
+        this.fromPage = fromPage;
     }
 }

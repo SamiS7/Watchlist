@@ -11,4 +11,5 @@ module client {
 
     opens watchlist;
     opens watchlist.ui.components;
+    opens watchlist.models.imdb;
 }

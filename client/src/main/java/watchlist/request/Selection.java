@@ -44,7 +44,6 @@ public class Selection {
 
     public List<MovieInfos> makeRequest(String url) throws UnirestException {
         var request = Unirest.get(url);
-        List<MovieInfos> list = new ArrayList<>();
         var response = request.asObject(MovieInfos[].class);
         return Arrays.stream(response.getBody()).collect(Collectors.toList());
     }

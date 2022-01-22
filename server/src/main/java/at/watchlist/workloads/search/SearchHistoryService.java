@@ -29,6 +29,9 @@ public class SearchHistoryService {
     }
 
     public boolean update(Long accountId, String searchStr) {
+        if (searchStr.length() <= 0) {
+            return false;
+        }
         var sw = searchWordRepo.findById(searchStr);
         var a = accountRepo.findById(accountId);
 

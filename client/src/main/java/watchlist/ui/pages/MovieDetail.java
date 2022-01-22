@@ -27,8 +27,8 @@ import watchlist.models.Watchlist;
 import watchlist.request.IMDBRequest;
 import watchlist.request.MovieRequests;
 import watchlist.ui.components.AlertError;
-import watchlist.ui.components.MovieInfoForImdbO;
-import watchlist.ui.components.MovieInfoForImdbU;
+import watchlist.models.imdb.MovieInfoForImdbO;
+import watchlist.models.imdb.MovieInfoForImdbU;
 
 public class MovieDetail extends StackPane implements Reloadable {
     private MovieInfos movieInfos;

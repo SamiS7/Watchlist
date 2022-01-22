@@ -24,7 +24,7 @@ public class SearchHistoryResource {
     @Path("{accountId}")
     @Transactional
     public Response updateSearchHistory(@PathParam("accountId") Long accountId, String searchStr) {
-        service.update(accountId, searchStr);
-        return Response.ok().build();
+        var response = service.update(accountId, searchStr);
+        return (response ? Response.ok() : Response.status(404)).build();
     }
 }
