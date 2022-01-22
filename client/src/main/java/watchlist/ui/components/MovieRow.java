@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import watchlist.enums.Category;
+import watchlist.ui.components.enums.Category;
 import watchlist.models.MovieInfos;
 import watchlist.request.Selection;
 import watchlist.ui.pages.MovieDetail;
@@ -79,7 +79,7 @@ public class MovieRow extends VBox {
                         button.setGraphic(imageView);
                         button.setBackground(null);
                         button.setOnAction(actionEvent -> {
-                            MovieDetail.showMovieDetail(m.getId(), fromPage);
+                            MovieDetail.showMovieDetail(m, fromPage);
                         });
                         Platform.runLater(new Runnable() {
                             @Override
@@ -118,7 +118,6 @@ public class MovieRow extends VBox {
                 case FAMOUS -> Selection.getINSTANCE().getBestRated(0, 9);
             };
         } catch (UnirestException e) {
-            e.printStackTrace();
         }
         return null;
     }

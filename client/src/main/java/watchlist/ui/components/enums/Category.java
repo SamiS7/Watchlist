@@ -1,4 +1,4 @@
-package watchlist.enums;
+package watchlist.ui.components.enums;
 
 public enum Category {
     SHORTLY_SAVED("Kürzlich gespeichert"),

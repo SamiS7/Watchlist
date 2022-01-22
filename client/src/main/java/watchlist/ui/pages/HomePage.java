@@ -3,13 +3,13 @@ package watchlist.ui.pages;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import watchlist.enums.Category;
+import watchlist.ui.components.enums.Category;
 import watchlist.models.MovieInfos;
 import watchlist.ui.components.MovieRow;
 
 import java.util.List;
 
-public class HomePage extends HBox implements Page {
+public class HomePage extends HBox implements Reloadable {
     private ScrollPane scrollPane;
     private VBox content;
 

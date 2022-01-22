@@ -8,11 +8,6 @@ public class Watchlist {
     public Watchlist() {
     }
 
-    public Watchlist(Boolean seen, Boolean liked) {
-        this.seen = seen;
-        this.liked = liked;
-    }
-
     public Watchlist(MovieId movieId, Boolean seen, Boolean liked) {
         this.movieId = movieId;
         this.seen = seen;

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
@@ -29,13 +30,12 @@ import watchlist.ui.components.AlertError;
 import watchlist.ui.components.MovieInfoForImdbO;
 import watchlist.ui.components.MovieInfoForImdbU;
 
-public class MovieDetail extends StackPane implements Page {
+public class MovieDetail extends StackPane implements Reloadable {
     private MovieInfos movieInfos;
     private Watchlist savedMovie;
     private Long userId;
     private BooleanProperty isSaved = new SimpleBooleanProperty();
     private BooleanProperty seen = new SimpleBooleanProperty();
-    private BorderPane borderPane;
 
     public MovieDetail(MovieInfos movieInfos) {
         this.movieInfos = movieInfos;
@@ -46,17 +46,25 @@ public class MovieDetail extends StackPane implements Page {
 
     @Override
     public void initBody() {
-        this.getChildren().clear();
         this.userId = Main.userIdProperty().get();
         initSavedMovie();
-
-        borderPane = new BorderPane();
         this.getStyleClass().add("content");
-        this.getChildren().add(borderPane);
+
+        new Thread(() -> {
+            BorderPane borderPane = getBody();
+            Platform.runLater(() -> {
+                this.getChildren().setAll(borderPane);
+            });
+        }).start();
+    }
+
+    private BorderPane getBody() {
+        BorderPane borderPane;
+        borderPane = new BorderPane();
         borderPane.getStyleClass().add("content");
         VBox vb1 = new VBox();
         vb1.getStyleClass().add("leftVB");
-        this.getStyleClass().add("borderpane");
+        borderPane.getStyleClass().add("borderpane");
 
         Label title = new Label(movieInfos.getTitle());
         title.getStyleClass().add("title");
@@ -100,7 +108,7 @@ public class MovieDetail extends StackPane implements Page {
 
                 System.out.println(response.getStatus() + ": " + response.getStatusText());
                 //if (response.getStatus() == 200) {
-                    initSavedMovie();
+                initSavedMovie();
                 //}
             } catch (UnirestException e) {
                 e.printStackTrace();
@@ -145,6 +153,8 @@ public class MovieDetail extends StackPane implements Page {
         BorderPane.setAlignment(vb1, Pos.CENTER_LEFT);
         BorderPane.setAlignment(saveForLater, Pos.BOTTOM_CENTER);
         BorderPane.setAlignment(iv, Pos.TOP_CENTER);
+
+        return borderPane;
     }
 
     public void showTrailer() {
@@ -201,7 +211,7 @@ public class MovieDetail extends StackPane implements Page {
 
                 if (response.getStatus() == 200) {
                     savedMovie = response.getBody();
-                    updateProperties(true, savedMovie.getSeen());
+                    updateProperties(savedMovie.getSeen(), savedMovie.getSeen());
                 } else if (response.getStatus() == 404) {
                     updateProperties(false, false);
                 }
@@ -219,9 +229,9 @@ public class MovieDetail extends StackPane implements Page {
     }
 
     public static void showMovieDetail(String pId, Node fromPage) {
-        Task<JsonObject> jo = IMDBRequest.request("https://imdb-api.com/en/API/Title/k_46caativ/" + pId + "/trailer");
+        Task<JsonObject> jo = IMDBRequest.request(IMDBRequest.imdbTitleUrl + pId + "/trailer");
 
-        //Task<JsonObject> jo = IMDBRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/" + pId);
+        //Task<JsonObject> jo = IMDBRequest.requestWithRapidApi(IMDBRequest.rapidApiTitleUrl + pId);
 
 
         jo.setOnSucceeded(action -> {
@@ -246,11 +256,11 @@ public class MovieDetail extends StackPane implements Page {
             }
              */
 
-            showMovieDetail(fromPage,convertToMovieInfo(m));
+            showMovieDetail(convertToMovieInfo(m), fromPage);
         });
     }
 
-    public static void showMovieDetail(Node fromPage, MovieInfos movieInfos) {
+    public static void showMovieDetail(MovieInfos movieInfos, Node fromPage) {
         MovieDetail movieDetail = new MovieDetail(movieInfos);
 
         Node root = Main.getRoot();

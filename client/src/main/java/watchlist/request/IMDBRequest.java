@@ -7,7 +7,10 @@ import com.mashape.unirest.http.Unirest;
 import javafx.concurrent.Task;
 
 public class IMDBRequest {
-
+    public static final String imdbSearchUrl = "https://imdb-api.com/en/API/Search/k_46caativ/";
+    public static final String imdbTitleUrl = "https://imdb-api.com/en/API/Title/k_46caativ/";
+    public static final String rapidApiSearchUrl = "https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/";
+    public static final String rapidApiTitleUrl = "https://imdb-internet-movie-database-unofficial.p.rapidapi.com/film/";
 
     public static Task<JsonObject> request(String urlStr) {
         Task<JsonObject> task = new Task<JsonObject>() {
@@ -46,4 +49,6 @@ public class IMDBRequest {
         th.start();
         return task;
     }
+
+
 }

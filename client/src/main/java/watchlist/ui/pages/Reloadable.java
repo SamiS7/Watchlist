@@ -2,7 +2,7 @@ package watchlist.ui.pages;
 
 import watchlist.Main;
 
-public interface Page {
+public interface Reloadable {
 
     void initBody();
 

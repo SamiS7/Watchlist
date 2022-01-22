@@ -20,7 +20,7 @@ import javafx.scene.layout.VBox;
 import watchlist.request.IMDBRequest;
 import watchlist.ui.components.AlertError;
 
-public class SearchPage extends VBox implements Page {
+public class SearchPage extends VBox implements Reloadable {
     private ScrollPane scrollPane;
     private String searchStr;
     private Node root;
@@ -90,8 +90,8 @@ public class SearchPage extends VBox implements Page {
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
 
-        Task<JsonObject> taskJson = IMDBRequest.request("https://imdb-api.com/en/API/Search/k_46caativ/" + searchStr);
-        //Task<JsonObject> taskJson = IMDBRequest.requestWithRapidApi("https://imdb-internet-movie-database-unofficial.p.rapidapi.com/search/" + searchStr);
+        Task<JsonObject> taskJson = IMDBRequest.request(IMDBRequest.imdbSearchUrl + searchStr);
+        //Task<JsonObject> taskJson = IMDBRequest.requestWithRapidApi(IMDBRequest.rapidApiSearchUrl + searchStr);
 
         taskJson.setOnSucceeded(action -> {
             Task task = new Task() {

@@ -14,13 +14,13 @@ import watchlist.Main;
 import watchlist.models.Account;
 import watchlist.request.LogIn;
 import watchlist.ui.pages.HomePage;
-import watchlist.ui.pages.Page;
+import watchlist.ui.pages.Reloadable;
 import watchlist.ui.pages.SearchPage;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Menu extends VBox implements Page {
+public class Menu extends VBox implements Reloadable {
     private Node currentPage;
 
     public Menu(Node currentPage) {
