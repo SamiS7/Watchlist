@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import watchlist.Main;
 import watchlist.models.Account;
@@ -85,20 +86,20 @@ public class Menu extends VBox implements Reloadable {
         AtomicReference<SearchPage> searchPage = new AtomicReference<>();
 
         homeB.setOnAction(actionEvent -> {
-            changeCurrentPage(homePage.get(), this);
+            changeCurrentPage(homePage.get(), this, v1, homeB);
         });
         searchB.setOnAction(actionEvent -> {
             if (searchPage.get() == null) {
                 searchPage.set(new SearchPage());
             }
-            changeCurrentPage(searchPage.get(), this);
+            changeCurrentPage(searchPage.get(), this, v1, searchB);
         });
 
         homeB.setOnMouseClicked(action -> {
             if (action.getButton().equals(MouseButton.PRIMARY) && action.getClickCount() == 2) {
                 var v = new HomePage();
                 homePage.set(v);
-                changeCurrentPage(v, this);
+                changeCurrentPage(v, this, v1, homeB);
             }
         });
 
@@ -106,16 +107,17 @@ public class Menu extends VBox implements Reloadable {
             if (action.getButton().equals(MouseButton.PRIMARY) && action.getClickCount() == 2) {
                 var v = new SearchPage();
                 searchPage.set(v);
-                changeCurrentPage(v, this);
+                changeCurrentPage(v, this, v1, searchB);
             }
         });
     }
 
-    public void changeCurrentPage(Node newPage, Node menu) {
-        if (this.currentPage != null) {
-            this.currentPage.getStyleClass().remove("active");
-        }
-        newPage.getStyleClass().add("active");
+    public void changeCurrentPage(Node newPage, Pane menu, Pane vb, Button button) {
+        vb.getChildren().stream().forEach(n ->
+                n.getStyleClass().remove("active")
+        );
+
+        button.getStyleClass().add("active");
         this.currentPage = newPage;
         Main.getRoot().getChildren().setAll(menu, this.currentPage);
     }

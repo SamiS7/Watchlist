@@ -194,10 +194,22 @@
     -fx-pref-height: 300;
 }
 
-.movieRow .label, .movieRowPage .label {
+.movieRow .label, .movieRowPage .label, .searching, .movieRowMoreB{
     -fx-font-size: 25;
     -fx-text-fill: -body-font-color;
     -fx-background-color: none;
+}
+
+.movieRowMoreB {
+    -fx-min-width: 100;
+    -fx-min-height: 100;
+    -fx-pref-height: 300;
+    -fx-background-color: -menu-hover-color;
+    -fx-padding: 0;
+}
+
+.searching, .movieRowMoreB {
+    -fx-font-size: 18;
 }
 
 .scroll-bar {

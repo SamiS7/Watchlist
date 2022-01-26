@@ -9,11 +9,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import watchlist.ui.components.enums.Category;
 import watchlist.models.MovieInfos;
 import watchlist.request.Selection;
 import watchlist.ui.pages.MovieDetail;
+import watchlist.ui.pages.MovieRowPage;
 
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class MovieRow extends VBox {
         h.getStyleClass().add("imageBox");
         ScrollPane scrollPane = new ScrollPane(h);
 
-        initMovieRowContent(movieInfos, fromPage, h.getChildren(), h);
+        initMovieRowContent(movieInfos, fromPage, h);
 
         h.prefWidthProperty().bind(scrollPane.widthProperty());
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -54,20 +56,24 @@ public class MovieRow extends VBox {
         return scrollPane;
     }
 
-    public static List<MovieInfos> getMovieData(Category listCategory) {
+    public static List<MovieInfos> getMovieData(Category listCategory, int start, int end) {
         try {
             return switch (listCategory) {
-                case SHORTLY_SAVED -> Selection.getINSTANCE().getShortlyAdded(0, 9);
-                case SEEN -> Selection.getINSTANCE().getWatchedMovies(0, 9);
-                case NOT_SEEN -> Selection.getINSTANCE().getNotWatchedMovies(0, 9);
-                case FAMOUS -> Selection.getINSTANCE().getBestRated(0, 9);
+                case SHORTLY_SAVED -> Selection.getINSTANCE().getShortlyAdded(start, end);
+                case SEEN -> Selection.getINSTANCE().getWatchedMovies(start, end);
+                case NOT_SEEN -> Selection.getINSTANCE().getNotWatchedMovies(start, end);
+                case FAMOUS -> Selection.getINSTANCE().getBestRated(start, end);
             };
         } catch (UnirestException e) {
         }
         return null;
     }
 
-    public static void initMovieRowContent(List<MovieInfos> movieInfosList, Node fromPage, List<Node> children, Node tilePane) {
+    public static List<MovieInfos> getMovieData(Category listCategory) {
+        return getMovieData(listCategory, 0,9);
+    }
+
+    public void initMovieRowContent(List<MovieInfos> movieInfosList, Node fromPage, Pane pane) {
         new Thread(() -> {
             if (movieInfosList.size() > 0) {
                 for (MovieInfos m : movieInfosList) {
@@ -82,17 +88,23 @@ public class MovieRow extends VBox {
                     button.setOnAction(actionEvent -> {
                         MovieDetail.showMovieDetail(m, fromPage);
                     });
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            children.add(button);
-                        }
+                    Platform.runLater(() -> pane.getChildren().add(button));
+                }
+
+                if (movieInfosList.size() >= 10) {
+                    Button button = new Button("Mehr");
+                    button.getStyleClass().add("movieRowMoreB");
+                    button.setOnAction(actionEvent -> {
+                        List<MovieInfos> m = getMovieData(this.category, 0, -1);
+                        MovieRowPage.showMovieRowPage(this.category, m, this.fromPage);
                     });
+
+                    Platform.runLater(() -> pane.getChildren().add(button));
                 }
 
             } else {
                 Label label = new Label("Nichts zu dieser Kategorie gefunden!");
-                children.add(label);
+                pane.getChildren().add(label);
             }
         }).start();
     }

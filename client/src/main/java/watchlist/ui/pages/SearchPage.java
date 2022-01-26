@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -23,20 +22,14 @@ import watchlist.ui.components.AlertError;
 public class SearchPage extends VBox implements Reloadable {
     private ScrollPane scrollPane;
     private String searchStr;
-    private Node root;
 
     public SearchPage() {
         addReloadEvent();
         initBody();
     }
 
-    public SearchPage(Node root) {
+    public SearchPage(String searchStr) {
         this();
-        this.root = root;
-    }
-
-    public SearchPage(String searchStr, Node root) {
-        this(root);
         this.searchStr = searchStr;
     }
 
@@ -89,67 +82,52 @@ public class SearchPage extends VBox implements Reloadable {
         tilePane.setVgap(10);
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
+        Label statusL = new Label("Wird gesucht ...");
+        statusL.getStyleClass().add("searching");
+        tilePane.getChildren().add(statusL);
 
         Task<JsonObject> taskJson = IMDBRequest.request(IMDBRequest.imdbSearchUrl + searchStr);
         //Task<JsonObject> taskJson = IMDBRequest.requestWithRapidApi(IMDBRequest.rapidApiSearchUrl + searchStr);
 
         taskJson.setOnSucceeded(action -> {
-            Task task = new Task() {
-                @Override
-                protected Object call() throws Exception {
-                    try {
-                        double w = tilePane.getWidth() / 236;
-                        w = (tilePane.getWidth() - (25 * w)) / 236;
-                        double ww = ((tilePane.getWidth() - (25 * w)) / Math.round(w)) - 10;
-                        double dh = (ww - 236) * 1.36;
+            new Thread(() -> {
+                try {
+                    double w = tilePane.getWidth() / 236;
+                    w = (tilePane.getWidth() - (25 * w)) / 236;
+                    double ww = ((tilePane.getWidth() - (25 * w)) / Math.round(w)) - 10;
+                    double dh = (ww - 236) * 1.36;
 
-                        var arr = taskJson.get().getAsJsonArray("results");
-                        //var arr = taskJson.get().getAsJsonArray("titles");
-                        if (arr.size() > 0) {
-                            for (JsonElement j : arr) {
-                                Image poster = new Image(((JsonObject) j).get("image").getAsString());
-                                ImageView imageView = new ImageView(poster);
+                    var arr = taskJson.get().getAsJsonArray("results");
+                    //var arr = taskJson.get().getAsJsonArray("titles");
 
-                                imageView.setFitWidth(ww);
-                                imageView.setFitHeight(100 * 3.21 + dh);
-                                Button button = new Button();
-                                button.setGraphic(imageView);
-                                button.setBackground(null);
-                                button.setOnAction(actionEvent -> {
-                                    showMovieDetail(((JsonObject) j).get("id").getAsString());
-                                });
-                                Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tilePane.getChildren().add(button);
-                                    }
-                                });
-                            }
-                        } else {
-                            Label msgL = new Label("Kein Treffer gefunden!");
-                            msgL.getStyleClass().add("msgL");
-                            Platform.runLater(() -> {
-                                tilePane.getChildren().add(msgL);
-                            });
+                    Platform.runLater(() -> tilePane.getChildren().clear());
+                    if (arr.size() > 0) {
+                        for (JsonElement j : arr) {
+                            Image poster = new Image(((JsonObject) j).get("image").getAsString());
+                            ImageView imageView = new ImageView(poster);
+
+                            imageView.setFitWidth(ww);
+                            imageView.setFitHeight(100 * 3.21 + dh);
+                            Button button = new Button();
+                            button.setGraphic(imageView);
+                            button.setBackground(null);
+                            button.setOnAction(actionEvent ->
+                                    MovieDetail.showMovieDetail(((JsonObject) j).get("id").getAsString(), this)
+                            );
+                            Platform.runLater(() -> tilePane.getChildren().add(button));
                         }
-                    } catch (Exception e) {
-                        new AlertError("Technische Probleme", " Es sind technische Probleme aufgetreten. Versuchen es erneut!");
-                        e.printStackTrace();
+                    } else {
+                        Label msgL = new Label("Kein Treffer gefunden!");
+                        msgL.getStyleClass().add("msgL");
+                        Platform.runLater(() -> tilePane.getChildren().add(msgL));
                     }
-                    return 1;
+                } catch (Exception e) {
+                    new AlertError("Technische Probleme", " Es sind technische Probleme aufgetreten. Versuchen es erneut!");
+                    e.printStackTrace();
                 }
-            };
-
-            Thread th = new Thread(task);
-            th.setDaemon(true);
-            th.start();
+            }).start();
         });
         return tilePane;
-    }
-
-    public void showMovieDetail(String movieId) {
-        MovieDetail.showMovieDetail(movieId, this);
-
     }
 
     public String getSearchStr() {

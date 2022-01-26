@@ -19,12 +19,14 @@ public class SearchHistoryService {
     private AccountRepoImpl accountRepo;
 
     public List<SearchWord> get(Long accountId) {
-        var query = searchHistoryRepo.find("account_id", Sort.by("time").descending(), accountId);
+        var query = searchHistoryRepo.find("account_id", Sort.by("time").descending(), accountId)
+                .range(0, 9);
         if (query.count() <= 0) {
-            var q = searchWordRepo.findAll(Sort.by("counter").descending()).range(0, 9);
+            var q = searchWordRepo.findAll(Sort.by("counter").descending())
+                    .range(0, 9);
             return q.stream().toList();
         } else {
-            return query.range(0, 9).stream().map(s -> s.getSearchHistoryId().getSearchWord()).toList();
+            return query.stream().map(s -> s.getSearchHistoryId().getSearchWord()).toList();
         }
     }
 

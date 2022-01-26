@@ -45,7 +45,10 @@ public class MovieServiceImpl implements MovieService{
     }
 
     public List<MovieInfos> getFamous(int start, int end) {
-        var query = movieRepo.findAll(Sort.by("imdbRating").descending()).range(start, end);
+        var query = movieRepo.findAll(Sort.by("imdbRating").descending());
+        if (end > -1) {
+            query.range(start, end);
+        }
         return query.stream().toList();
     }
 }
