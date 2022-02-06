@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl {
     @Inject
     private AccountRepoImpl accountRepo;
     @Inject
@@ -33,21 +33,18 @@ public class AccountServiceImpl implements AccountService {
         this.savedMovieRepo = savedMovieRepo;
     }
 
-    @Override
     public List<Account> getAll() {
         var r = accountRepo.findAll().list();
         r.stream().forEach(account -> account.setPassword(null));
         return r;
     }
 
-    @Override
     public Account get(Long id) {
         var a = accountRepo.findById(id);
         a.setPassword(null);
         return a;
     }
 
-    @Override
     public LogInModel add(AccountDTO accountDTO) {
         if (accountDTO != null) {
             String s = validAccount(accountDTO);
@@ -64,7 +61,6 @@ public class AccountServiceImpl implements AccountService {
         return giveUnSuccessLogInModel("Der Username muss mind. 3 und Passwort 5 Zeichen haben!");
     }
 
-    @Override
     public LogInModel logIn(AccountDTO accountDTO) {
 
         if (accountDTO == null) {
@@ -81,7 +77,6 @@ public class AccountServiceImpl implements AccountService {
         return giveUnSuccessLogInModel("Der Username oder das Password ist falsch!");
     }
 
-    @Override
     public boolean addMovie(Long accountId, MovieInfos movieInfos) {
         Account account = accountRepo.findById(accountId);
 
@@ -96,7 +91,6 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
-    @Override
     public boolean updateWatchlist(Watchlist watchlist) {
         Watchlist w = savedMovieRepo.findById(watchlist.getMovieId());
 
@@ -109,7 +103,6 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
-    @Override
     public boolean removeSavedMovie(Long accountId, String movieId) {
         Account account = accountRepo.findById(accountId);
         MovieInfos movieInfos = movieService.get(movieId);
@@ -127,7 +120,6 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
-    @Override
     public Watchlist getWatchlist(Long accountId, String movieId) {
         MovieId movieId1 = new MovieId(accountRepo.findById(accountId), movieService.get(movieId));
         return savedMovieRepo.findById(movieId1);

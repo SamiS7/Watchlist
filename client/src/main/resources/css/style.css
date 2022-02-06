@@ -89,7 +89,7 @@
     -fx-background-color: -usernameL-bgc;
 }
 
-.content, .scrollPane {
+.content {
     -fx-pref-width: 2000;
     -fx-pref-height: 1500;
     -fx-background-color: -body-bgc;
@@ -130,6 +130,7 @@
 
 .scrollPane, .scrollPane > .viewport{
     -fx-background-color: -body-bgc;
+    -fx-padding: 0;
 }
 
 .leftVB, .rightVB {
@@ -143,7 +144,7 @@
     -fx-pref-width: 600;
 }
 
-.borderpane .label {
+.borderpane .label, .movieRowPage .nothingFound {
     -fx-text-fill: -body-font-color;
     -fx-wrap-text: true;
     -fx-font-size: 16;
@@ -190,14 +191,27 @@
 
 .imageBox {
     -fx-background-color: -body-bgc;
-    -fx-spacing: 20;
+    -fx-spacing: 15;
     -fx-pref-height: 300;
 }
 
-.movieRow .label, .movieRowPage .label, .searching, .movieRowMoreB{
+.movieRow .label, .movieRowPage > .label, .searching, .movieRowMoreB{
     -fx-font-size: 25;
     -fx-text-fill: -body-font-color;
     -fx-background-color: none;
+}
+
+.movieRowPage {
+    -fx-spacing: 5;
+}
+
+.movieRowPage .mRTilePane {
+    -fx-vgap: 20;
+    -fx-hgap: 5;
+}
+
+.movieRowPage .nothingFound {
+    -fx-padding: 20;
 }
 
 .movieRowMoreB {
@@ -229,10 +243,11 @@
     -fx-background-color: -scroll-thumb-color;
 }
 
-.homePage {
-    -fx-spacing: 50;
+.homePage, .movieRowPage {
+    -fx-background-color: -body-bgc;
+    -fx-padding: 10 0 0 15;
 }
 
 .homePageContent {
-    -fx-background-color: -body-bgc;
+    -fx-spacing: 30;
 }

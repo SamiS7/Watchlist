@@ -45,10 +45,11 @@ public class MovieRow extends VBox {
         HBox h = new HBox();
         h.getStyleClass().add("imageBox");
         ScrollPane scrollPane = new ScrollPane(h);
+        scrollPane.getStyleClass().add("scrollPane");
 
         initMovieRowContent(movieInfos, fromPage, h);
 
-        h.prefWidthProperty().bind(scrollPane.widthProperty());
+        //h.prefWidthProperty().bind(scrollPane.widthProperty());
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setPrefSize(500, 325);
@@ -85,6 +86,8 @@ public class MovieRow extends VBox {
                     Button button = new Button();
                     button.setGraphic(imageView);
                     button.setBackground(null);
+                    button.setStyle("-fx-padding: 0");
+
                     button.setOnAction(actionEvent -> {
                         MovieDetail.showMovieDetail(m, fromPage);
                     });
@@ -95,8 +98,7 @@ public class MovieRow extends VBox {
                     Button button = new Button("Mehr");
                     button.getStyleClass().add("movieRowMoreB");
                     button.setOnAction(actionEvent -> {
-                        List<MovieInfos> m = getMovieData(this.category, 0, -1);
-                        MovieRowPage.showMovieRowPage(this.category, m, this.fromPage);
+                        new MovieRowPage(this.category, this.fromPage).show();
                     });
 
                     Platform.runLater(() -> pane.getChildren().add(button));
@@ -104,7 +106,7 @@ public class MovieRow extends VBox {
 
             } else {
                 Label label = new Label("Nichts zu dieser Kategorie gefunden!");
-                pane.getChildren().add(label);
+                Platform.runLater(() -> pane.getChildren().add(label));
             }
         }).start();
     }

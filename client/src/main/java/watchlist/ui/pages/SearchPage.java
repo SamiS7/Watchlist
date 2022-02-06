@@ -24,8 +24,7 @@ public class SearchPage extends VBox implements Reloadable {
     private String searchStr;
 
     public SearchPage() {
-        addReloadEvent();
-        initBody();
+        addAndInit();
     }
 
     public SearchPage(String searchStr) {
@@ -59,7 +58,7 @@ public class SearchPage extends VBox implements Reloadable {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setFitToWidth(true);
-        scrollPane.getStyleClass().add("scrollPane");
+        scrollPane.getStyleClass().addAll("scrollPane", "content");
         this.getChildren().add(scrollPane);
 
         button.setOnAction(actionEvent -> {

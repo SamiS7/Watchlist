@@ -9,4 +9,9 @@ public interface Reloadable {
     default void addReloadEvent() {
         Main.userIdProperty().addListener(observable -> initBody());
     }
+
+    default void addAndInit() {
+        addReloadEvent();
+        initBody();
+    }
 }

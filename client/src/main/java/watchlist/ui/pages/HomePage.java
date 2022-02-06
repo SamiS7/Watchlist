@@ -14,8 +14,7 @@ public class HomePage extends HBox implements Reloadable {
     private VBox content;
 
     public HomePage() {
-        addReloadEvent();
-        initBody();
+        addAndInit();
     }
 
     @Override
@@ -24,11 +23,11 @@ public class HomePage extends HBox implements Reloadable {
 
         scrollPane = new ScrollPane();
         content = new VBox();
+        content.maxWidthProperty().bind(scrollPane.widthProperty().subtract(30));
 
         content.getStyleClass().add("homePageContent");
         content.prefWidthProperty().bind(this.widthProperty());
-        this.getStyleClass().add("content");
-        content.getStyleClass().add("homePage");
+        this.getStyleClass().addAll("content", "homePage");
 
         scrollPane.setContent(content);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);

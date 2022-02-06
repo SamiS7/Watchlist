@@ -40,8 +40,7 @@ public class MovieDetail extends StackPane implements Reloadable {
     public MovieDetail(MovieInfos movieInfos) {
         this.movieInfos = movieInfos;
 
-        addReloadEvent();
-        initBody();
+        addAndInit();
     }
 
     @Override
@@ -211,7 +210,7 @@ public class MovieDetail extends StackPane implements Reloadable {
 
                 if (response.getStatus() == 200) {
                     savedMovie = response.getBody();
-                    updateProperties(savedMovie.getSeen(), savedMovie.getSeen());
+                    updateProperties(true, savedMovie.getSeen());
                 } else if (response.getStatus() == 404) {
                     updateProperties(false, false);
                 }

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class MovieServiceImpl implements MovieService{
+public class MovieServiceImpl {
     @Inject
     private MovieRepoImpl movieRepo;
 
@@ -16,17 +16,14 @@ public class MovieServiceImpl implements MovieService{
         this.movieRepo = movieRepo;
     }
 
-    @Override
     public List<MovieInfos> getAll() {
         return movieRepo.findAll().list();
     }
 
-    @Override
     public MovieInfos get(String id) {
         return movieRepo.findById(id);
     }
 
-    @Override
     public boolean add(MovieInfos movieInfos) {
         if (movieRepo.findById(movieInfos.getId()) == null) {
             movieRepo.persist(movieInfos);
@@ -35,7 +32,6 @@ public class MovieServiceImpl implements MovieService{
         return false;
     }
 
-    @Override
     public boolean update(MovieInfos movieInfos) {
         if (movieInfos != null) {
             movieRepo.getEntityManager().merge(movieInfos);
