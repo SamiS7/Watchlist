@@ -25,7 +25,6 @@ public class Menu extends VBox implements Reloadable {
     private Node currentPage;
 
     public Menu(Node currentPage) {
-
         this.currentPage = currentPage;
 
         addReloadEvent();

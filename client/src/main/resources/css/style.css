@@ -19,6 +19,10 @@
     -fx-text-fill: -body-font-color;
 }
 
+.button:hover {
+    -fx-cursor: hand;
+}
+
 .menu {
     -fx-pref-width: -menu-width;
     -fx-min-width: 150;
@@ -105,10 +109,10 @@
 .searchBox {
     -fx-pref-width: 2000;
     -fx-spacing: 10;
-    -fx-alignment: center;
+    -fx-alignment: top-center;
 }
 
-.searchBox .text-field, .searchBox .button, .msgL{
+.searchBox .text-field, .searchBox .button, .msgL {
     -fx-pref-height: 50;
     -fx-font-size: 16;
     -fx-text-fill: -body-font-color;
@@ -119,17 +123,42 @@
     -fx-background-color: -textField-color;
 }
 
-.searchBox .button {
-    -fx-pref-width: 100;
+.suggestionBox .button {
+    -fx-pref-width: 500;
+    -fx-padding: 10 0;
+    -fx-background-color: -menu-border-color;
+}
+
+.suggestionBox .button :hover {
+    -fx-opacity: .7;
+}
+
+.textFieldBox, .suggestionBox {
+    -fx-spacing: 5;
+}
+
+.suggestionBox {
+    -fx-background-color: -body-bgc;
+}
+
+.searchBox > .button, .textFieldBox .text-field {
+    -fx-min-height: 50;
+}
+
+.searchBox > .button {
     -fx-background-color: -search-button-color;
+}
+
+.searchBox > .button {
+    -fx-pref-width: 100;
 }
 
 .msgL {
     -fx-background-color: none;
 }
 
-.scrollPane, .scrollPane > .viewport{
-    -fx-background-color: -body-bgc;
+.scrollPane, .scrollPane > .viewport {
+    -fx-background-color: none;
     -fx-padding: 0;
 }
 
@@ -195,7 +224,7 @@
     -fx-pref-height: 300;
 }
 
-.movieRow .label, .movieRowPage > .label, .searching, .movieRowMoreB{
+.movieRow .label, .movieRowPage > .label, .searching, .movieRowMoreB {
     -fx-font-size: 25;
     -fx-text-fill: -body-font-color;
     -fx-background-color: none;

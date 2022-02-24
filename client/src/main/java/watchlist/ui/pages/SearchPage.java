@@ -3,6 +3,7 @@ package watchlist.ui.pages;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -13,15 +14,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import watchlist.models.SearchWord;
 import watchlist.request.IMDBRequest;
+import watchlist.request.SearchRequest;
 import watchlist.ui.components.AlertError;
 
-public class SearchPage extends VBox implements Reloadable {
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
+public class SearchPage extends StackPane implements Reloadable {
     private ScrollPane scrollPane;
-    private String searchStr;
+    private SimpleStringProperty searchStr = new SimpleStringProperty("");
 
     public SearchPage() {
         addAndInit();
@@ -29,47 +38,60 @@ public class SearchPage extends VBox implements Reloadable {
 
     public SearchPage(String searchStr) {
         this();
-        this.searchStr = searchStr;
+        this.searchStr.set(searchStr);
     }
 
     @Override
     public void initBody() {
         this.getChildren().clear();
 
-        HBox hb = new HBox();
-        hb.getStyleClass().add("searchBox");
+        HBox searchBox = new HBox();
+        searchBox.getStyleClass().add("searchBox");
+        searchBox.setMinHeight(60);
+
         TextField textField = new TextField();
         textField.setPromptText("Suchen ...");
+        textField.textProperty().bindBidirectional(this.searchStr);
 
         Button button = new Button("Suchen");
-        hb.getChildren().addAll(textField, button);
-
         textField.setOnKeyPressed(e -> {
             if (e.getCode().equals(KeyCode.ENTER)) {
                 button.fireEvent(new ActionEvent());
             }
         });
+        AtomicReference<VBox> suggestions = new AtomicReference<>(getSuggestions(textField));
 
-        this.getChildren().add(hb);
+        VBox textFieldBox = new VBox(textField, suggestions.get());
+        textFieldBox.getStyleClass().add("textFieldBox");
+
+        searchBox.getChildren().addAll(textFieldBox, button);
+
+        this.getChildren().add(searchBox);
+        StackPane.setAlignment(searchBox, Pos.TOP_CENTER);
+        searchBox.setMaxHeight(70);
         this.getStyleClass().add("content");
-        this.setSpacing(20);
 
         scrollPane = new ScrollPane();
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setFitToWidth(true);
-        scrollPane.getStyleClass().addAll("scrollPane", "content");
+        scrollPane.getStyleClass().addAll("scrollPane");
+
         this.getChildren().add(scrollPane);
+        scrollPane.toBack();
+        scrollPane.maxHeightProperty().bind(this.heightProperty().subtract(90));
+        StackPane.setAlignment(scrollPane, Pos.BOTTOM_CENTER);
 
         button.setOnAction(actionEvent -> {
-            this.searchStr = textField.getText();
-            if (searchStr.length() > 0) {
+            if (searchStr.get().length() > 0) {
                 scrollPane.setContent(search());
+                textFieldBox.getChildren().remove(suggestions.get());
+                suggestions.set(getSuggestions(textField));
+                textFieldBox.getChildren().add(suggestions.get());
             }
         });
 
-        if (searchStr != null) {
-            textField.setText(searchStr);
+        if (searchStr.get() != null) {
             button.fireEvent(new ActionEvent());
         } else {
             Platform.runLater(() -> textField.requestFocus());
@@ -85,8 +107,8 @@ public class SearchPage extends VBox implements Reloadable {
         statusL.getStyleClass().add("searching");
         tilePane.getChildren().add(statusL);
 
-        Task<JsonObject> taskJson = IMDBRequest.request(IMDBRequest.imdbSearchUrl + searchStr);
-        //Task<JsonObject> taskJson = IMDBRequest.requestWithRapidApi(IMDBRequest.rapidApiSearchUrl + searchStr);
+        Task<JsonObject> taskJson = IMDBRequest.request(IMDBRequest.imdbSearchUrl + this.searchStr.get());
+        //Task<JsonObject> taskJson = IMDBRequest.requestWithRapidApi(IMDBRequest.rapidApiSearchUrl + searchStr.get());
 
         taskJson.setOnSucceeded(action -> {
             new Thread(() -> {
@@ -121,19 +143,51 @@ public class SearchPage extends VBox implements Reloadable {
                         Platform.runLater(() -> tilePane.getChildren().add(msgL));
                     }
                 } catch (Exception e) {
-                    new AlertError("Technische Probleme", " Es sind technische Probleme aufgetreten. Versuchen es erneut!");
-                    e.printStackTrace();
+                    Platform.runLater(() -> new AlertError("Technische Probleme", " Es sind technische Probleme aufgetreten. Versuchen es erneut!"));
                 }
             }).start();
         });
+
+        SearchRequest.updateSearchHistory(this.searchStr.get());
+
         return tilePane;
     }
 
+    private VBox getSuggestions(TextField textField) {
+        VBox vBox = new VBox();
+        vBox.getStyleClass().add("suggestionBox");
+        vBox.setFocusTraversable(true);
+        vBox.setVisible(false);
+
+        textField.focusedProperty().addListener((observableValue, oldVal, newVal) ->
+                vBox.setVisible(newVal || vBox.isFocused() || vBox.getChildren().stream().anyMatch(b -> b.isFocused()))
+        );
+
+        vBox.focusedProperty().addListener(((observableValue, aBoolean, t1) -> System.out.println(aBoolean)));
+        vBox.managedProperty().bind(vBox.visibleProperty());
+
+        List<SearchWord> list = SearchRequest.getSearchWords();
+
+        if (list != null) {
+            for (SearchWord s : list) {
+                Button b = new Button(s.getSearchWord());
+                vBox.getChildren().add(b);
+
+                b.setOnAction(actionEvent -> {
+                    textField.setText(s.getSearchWord());
+                    textField.fireEvent(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.ENTER, false, false, false, false));
+                });
+            }
+        }
+
+        return vBox;
+    }
+
     public String getSearchStr() {
-        return searchStr;
+        return searchStr.get();
     }
 
     public void setSearchStr(String searchStr) {
-        this.searchStr = searchStr;
+        this.searchStr.set(searchStr);
     }
 }

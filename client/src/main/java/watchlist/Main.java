@@ -11,6 +11,7 @@ import watchlist.models.Account;
 import watchlist.request.LogIn;
 import watchlist.ui.components.Menu;
 import watchlist.ui.pages.HomePage;
+import watchlist.ui.pages.SearchPage;
 
 public class Main extends Application {
     private static LongProperty userId = new SimpleLongProperty(-1);
@@ -23,16 +24,17 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        currentPage = new HomePage();
+        LogIn.initObjectMapper();
+
+        //currentPage = new HomePage();
+        currentPage = new SearchPage("game");
         root.getChildren().setAll(new Menu(currentPage), currentPage);
+        root.setOnMousePressed(e -> root.requestFocus());
 
         root.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
         stage.setTitle("Watchlist");
-
-        LogIn.initObjectMapper();
-
         stage.show();
     }
 

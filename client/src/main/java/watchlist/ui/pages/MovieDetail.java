@@ -160,7 +160,6 @@ public class MovieDetail extends StackPane implements Reloadable {
         VBox trailerVB = new VBox();
         trailerVB.setMaxSize(900, 600);
         WebView webView = new WebView();
-        this.getStyleClass().add("content");
         webView.getEngine().load(movieInfos.getTrailerUrl());
         webView.getEngine().setUserStyleSheetLocation(getClass().getResource("/css/webView.css").toString());
 
