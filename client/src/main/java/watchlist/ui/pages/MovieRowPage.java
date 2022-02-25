@@ -1,6 +1,7 @@
 package watchlist.ui.pages;
 
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -47,6 +48,8 @@ public class MovieRowPage extends VBox implements Reloadable {
 
         TilePane tilePane = new TilePane();
         tilePane.getStyleClass().add("mRTilePane");
+        tilePane.setTileAlignment(Pos.CENTER);
+        tilePane.setAlignment(Pos.CENTER);
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(tilePane);
@@ -68,8 +71,8 @@ public class MovieRowPage extends VBox implements Reloadable {
                 for (MovieInfos m : this.movieInfosList) {
                     Image image = new Image(m.getPosterUrl());
                     ImageView imageView = new ImageView(image);
-                    imageView.setPreserveRatio(true);
-                    imageView.setFitHeight(300);
+                    imageView.setFitWidth(100*2.36);
+                    imageView.setFitHeight(100*3.21);
 
                     Button button = new Button();
                     button.setGraphic(imageView);

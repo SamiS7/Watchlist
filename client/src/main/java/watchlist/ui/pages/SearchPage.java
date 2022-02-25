@@ -26,7 +26,6 @@ import watchlist.ui.components.AlertError;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 public class SearchPage extends StackPane implements Reloadable {
     private ScrollPane scrollPane;
@@ -103,6 +102,7 @@ public class SearchPage extends StackPane implements Reloadable {
         tilePane.setVgap(10);
         tilePane.setHgap(10);
         tilePane.setTileAlignment(Pos.CENTER);
+        tilePane.setAlignment(Pos.CENTER);
         Label statusL = new Label("Wird gesucht ...");
         statusL.getStyleClass().add("searching");
         tilePane.getChildren().add(statusL);
@@ -126,9 +126,9 @@ public class SearchPage extends StackPane implements Reloadable {
                         for (JsonElement j : arr) {
                             Image poster = new Image(((JsonObject) j).get("image").getAsString());
                             ImageView imageView = new ImageView(poster);
-
                             imageView.setFitWidth(ww);
                             imageView.setFitHeight(100 * 3.21 + dh);
+
                             Button button = new Button();
                             button.setGraphic(imageView);
                             button.setBackground(null);
