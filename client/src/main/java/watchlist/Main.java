@@ -27,7 +27,7 @@ public class Main extends Application {
         LogIn.initObjectMapper();
 
         //currentPage = new HomePage();
-        currentPage = new SearchPage("game");
+        currentPage = new HomePage();
         root.getChildren().setAll(new Menu(currentPage), currentPage);
         root.setOnMousePressed(e -> root.requestFocus());
 

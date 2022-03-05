@@ -235,8 +235,8 @@
 }
 
 .movieRowPage .mRTilePane {
-    -fx-vgap: 20;
-    -fx-hgap: 15;
+    -fx-vgap: 5;
+    -fx-hgap: 0;
 }
 
 .movieRowPage .nothingFound {

@@ -81,10 +81,13 @@ public class Menu extends VBox implements Reloadable {
             }
         });
 
-        AtomicReference<HomePage> homePage = new AtomicReference<>(new HomePage());
+        AtomicReference<HomePage> homePage = new AtomicReference<>();
         AtomicReference<SearchPage> searchPage = new AtomicReference<>();
 
         homeB.setOnAction(actionEvent -> {
+            if (homePage.get() == null) {
+                homePage.set(new HomePage());
+            }
             changeCurrentPage(homePage.get(), this, v1, homeB);
         });
         searchB.setOnAction(actionEvent -> {

@@ -100,7 +100,7 @@ public class SearchPage extends StackPane implements Reloadable {
     public TilePane search() {
         TilePane tilePane = new TilePane();
         tilePane.setVgap(10);
-        tilePane.setHgap(10);
+        tilePane.setHgap(0);
         tilePane.setTileAlignment(Pos.CENTER);
         tilePane.setAlignment(Pos.CENTER);
         Label statusL = new Label("Wird gesucht ...");
@@ -124,10 +124,10 @@ public class SearchPage extends StackPane implements Reloadable {
                     Platform.runLater(() -> tilePane.getChildren().clear());
                     if (arr.size() > 0) {
                         for (JsonElement j : arr) {
-                            Image poster = new Image(((JsonObject) j).get("image").getAsString());
+                            Image poster = new Image(((JsonObject) j).get("image").getAsString(), ww, 100 * 3.21 + dh, false, false);
                             ImageView imageView = new ImageView(poster);
-                            imageView.setFitWidth(ww);
-                            imageView.setFitHeight(100 * 3.21 + dh);
+                            //imageView.setFitWidth(ww);
+                            //imageView.setFitHeight(100 * 3.21 + dh);
 
                             Button button = new Button();
                             button.setGraphic(imageView);
@@ -163,7 +163,6 @@ public class SearchPage extends StackPane implements Reloadable {
                 vBox.setVisible(newVal || vBox.isFocused() || vBox.getChildren().stream().anyMatch(b -> b.isFocused()))
         );
 
-        vBox.focusedProperty().addListener(((observableValue, aBoolean, t1) -> System.out.println(aBoolean)));
         vBox.managedProperty().bind(vBox.visibleProperty());
 
         List<SearchWord> list = SearchRequest.getSearchWords();
@@ -171,7 +170,13 @@ public class SearchPage extends StackPane implements Reloadable {
         if (list != null) {
             for (SearchWord s : list) {
                 Button b = new Button(s.getSearchWord());
+                b.managedProperty().bind(b.visibleProperty());
                 vBox.getChildren().add(b);
+
+                b.setVisible(s.getSearchWord().contains(textField.getText()));
+                textField.textProperty().addListener((observableValue, s1, t1) -> {
+                    b.setVisible(s.getSearchWord().contains(t1));
+                });
 
                 b.setOnAction(actionEvent -> {
                     textField.setText(s.getSearchWord());

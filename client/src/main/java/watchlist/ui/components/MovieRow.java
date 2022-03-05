@@ -71,17 +71,18 @@ public class MovieRow extends VBox {
     }
 
     public static List<MovieInfos> getMovieData(Category listCategory) {
-        return getMovieData(listCategory, 0,9);
+        return getMovieData(listCategory, 0, 9);
     }
 
     public void initMovieRowContent(List<MovieInfos> movieInfosList, Node fromPage, Pane pane) {
         new Thread(() -> {
             if (movieInfosList.size() > 0) {
                 for (MovieInfos m : movieInfosList) {
-                    Image image = new Image(m.getPosterUrl());
+                    Image image = new Image(m.getPosterUrl(), 0, 300, true, false);
+
                     ImageView imageView = new ImageView(image);
-                    imageView.setPreserveRatio(true);
-                    imageView.setFitHeight(300);
+                    //imageView.setPreserveRatio(true);
+                    //imageView.setFitHeight(300);
 
                     Button button = new Button();
                     button.setGraphic(imageView);

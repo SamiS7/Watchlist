@@ -49,7 +49,7 @@ public class MovieRowPage extends VBox implements Reloadable {
         TilePane tilePane = new TilePane();
         tilePane.getStyleClass().add("mRTilePane");
         tilePane.setTileAlignment(Pos.CENTER);
-        tilePane.setAlignment(Pos.CENTER);
+        tilePane.setAlignment(Pos.TOP_CENTER);
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(tilePane);
@@ -69,15 +69,12 @@ public class MovieRowPage extends VBox implements Reloadable {
         new Thread(() -> {
             if (this.movieInfosList.size() > 0) {
                 for (MovieInfos m : this.movieInfosList) {
-                    Image image = new Image(m.getPosterUrl());
+                    Image image = new Image(m.getPosterUrl(), 90*2.36, 90*3.21, false, false);
                     ImageView imageView = new ImageView(image);
-                    imageView.setFitWidth(100*2.36);
-                    imageView.setFitHeight(100*3.21);
 
                     Button button = new Button();
                     button.setGraphic(imageView);
                     button.setBackground(null);
-                    button.setStyle("-fx-padding: 0");
 
                     button.setOnAction(actionEvent -> {
                         MovieDetail.showMovieDetail(m, this);
