@@ -8,11 +8,11 @@ import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class MovieServiceImpl {
+public class MovieService {
     @Inject
-    private MovieRepoImpl movieRepo;
+    private MovieRepo movieRepo;
 
-    public MovieServiceImpl(MovieRepoImpl movieRepo) {
+    public MovieService(MovieRepo movieRepo) {
         this.movieRepo = movieRepo;
     }
 

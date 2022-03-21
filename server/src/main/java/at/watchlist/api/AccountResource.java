@@ -4,7 +4,7 @@ import at.watchlist.entities.Account;
 import at.watchlist.entities.MovieInfos;
 import at.watchlist.entities.Watchlist;
 import at.watchlist.models.AccountDTO;
-import at.watchlist.workloads.account.AccountServiceImpl;
+import at.watchlist.workloads.account.AccountService;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 @Path("/account")
 public class AccountResource {
     @Inject
-    private AccountServiceImpl accountService;
+    private AccountService accountService;
 
     @GET
     public Response getAccounts() {

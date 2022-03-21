@@ -6,7 +6,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class AccountRepoImpl implements PanacheRepository<Account> {
+public class AccountRepo implements PanacheRepository<Account> {
 
     public Account findByName(String username) {
         return find("username", username).stream().findFirst().orElse(null);

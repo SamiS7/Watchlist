@@ -1,11 +1,10 @@
 package at.watchlist.workloads.movie;
 
-import at.watchlist.entities.MovieId;
-import at.watchlist.entities.Watchlist;
+import at.watchlist.entities.MovieInfos;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class WatchlistRepoImpl implements PanacheRepositoryBase<Watchlist, MovieId> {
+public class MovieRepo implements PanacheRepositoryBase<MovieInfos, String> {
 }

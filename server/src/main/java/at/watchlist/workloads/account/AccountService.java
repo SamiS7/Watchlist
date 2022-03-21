@@ -6,9 +6,9 @@ import at.watchlist.entities.MovieInfos;
 import at.watchlist.entities.Watchlist;
 import at.watchlist.models.AccountDTO;
 import at.watchlist.models.LogInModel;
-import at.watchlist.workloads.movie.MovieRepoImpl;
-import at.watchlist.workloads.movie.MovieServiceImpl;
-import at.watchlist.workloads.movie.WatchlistRepoImpl;
+import at.watchlist.workloads.movie.MovieRepo;
+import at.watchlist.workloads.movie.MovieService;
+import at.watchlist.workloads.movie.WatchlistRepo;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -16,17 +16,17 @@ import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class AccountServiceImpl {
+public class AccountService {
     @Inject
-    private AccountRepoImpl accountRepo;
+    private AccountRepo accountRepo;
     @Inject
-    private MovieServiceImpl movieService;
+    private MovieService movieService;
     @Inject
-    MovieRepoImpl movieRepo;
+    MovieRepo movieRepo;
     @Inject
-    private WatchlistRepoImpl savedMovieRepo;
+    private WatchlistRepo savedMovieRepo;
 
-    public AccountServiceImpl(AccountRepoImpl accountRepo, MovieServiceImpl movieService, MovieRepoImpl movieRepo, WatchlistRepoImpl savedMovieRepo) {
+    public AccountService(AccountRepo accountRepo, MovieService movieService, MovieRepo movieRepo, WatchlistRepo savedMovieRepo) {
         this.accountRepo = accountRepo;
         this.movieService = movieService;
         this.movieRepo = movieRepo;
