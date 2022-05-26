@@ -1,0 +1,6 @@
+<section id="{{id}}" class="movieRow">
+    <h3>{{rowTitle}}</h3>
+    <div id="movieRowImgs" *ngFor="let movie of movieImgs">
+        <app-movie-row-img [movieImg]="movie"></app-movie-row-img>
+    </div>
+</section>
