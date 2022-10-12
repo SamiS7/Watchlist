@@ -1,16 +1,17 @@
 <nav>
-    <button>|||</button>
+    <fa-icon (click)="onClick()" [icon]="faBars" id="menuB"></fa-icon>
     <div>
-        <div>
+        <div id="pageLinks">
             <a routerLink="./">Startseite</a>
             <a routerLink="./search">Suchen</a>
         </div>
-        <div>
-            <div>
-            <a routerLink="/">Anmelden/Registrieren</a>
-            <a routerLink="/">Einstellung</a>
+        <div id="userBox">
+            <div id="popUpBox" style="display: none;">
+                <p *ngIf="user">User:{{user.username}}</p>
+                <a routerLink="/">Anmelden</a>
+                <a routerLink="/">Einstellung</a>
             </div>
-            <button>O:::::</button>
+            <fa-icon [icon]="faCircleUser" id="profile"></fa-icon>
         </div>
     </div>
 </nav>

@@ -1,0 +1,10 @@
+<body>
+    <form [formGroup]="form">
+        <!-- <mat-form-field> -->
+            <input formControlName="search" type="text" placeholder="Film Title ...">
+        <!-- </mat-form-field> -->
+        <button mat-raised-button color="primary" (click)="onClick()">
+            <fa-icon [icon]="faSearchIcon"></fa-icon>
+        </button>
+    </form>
+</body>

@@ -1,6 +1,6 @@
 <main>
-    <app-movie-row *ngIf="shortlyAdded && shortlyAdded.length > 0" [id]="'shortlyAdded'" [rowTitle]="'Kürzlich gespeichert'" [movieImgs]="shortlyAdded"></app-movie-row>
-    <app-movie-row *ngIf="seen && seen.length > 0" [id]="'seen'" [rowTitle]="'Schon Gesehen'" [movieImgs]="seen"></app-movie-row>
-    <app-movie-row *ngIf="notSeen && notSeen.length > 0" [id]="'notSeen'" [rowTitle]="'Noch nicht gesehen'" [movieImgs]="notSeen"></app-movie-row>
-    <app-movie-row *ngIf="bestRated && bestRated.length > 0" [id]="'bestRated'" [rowTitle]="'Beliebt'" [movieImgs]="bestRated"></app-movie-row>
+    <app-movie-row [user]="user" [id]="'shortlyAdded'" [rowTitle]="'Kürzlich gespeichert'"></app-movie-row>
+    <app-movie-row [user]="user" [id]="'seen'" [rowTitle]="'Schon Gesehen'"></app-movie-row>
+    <app-movie-row [user]="user" [id]="'notSeen'" [rowTitle]="'Noch nicht gesehen'"></app-movie-row>
+    <app-movie-row [id]="'famous'" [rowTitle]="'Beliebt'"></app-movie-row>
 </main>

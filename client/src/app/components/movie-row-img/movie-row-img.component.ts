@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MovieImg } from 'src/app/MovieImg';
+import { MovieImg } from 'src/app/models/MovieImg';
 
 @Component({
   selector: 'app-movie-row-img',
