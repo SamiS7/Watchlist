@@ -1,7 +1,5 @@
 package at.watchlist.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -16,7 +14,6 @@ public class Account {
     private String username;
     private String password;
     @OneToMany(mappedBy = "movieId.account", cascade = CascadeType.ALL)
-    @JsonIgnore
     private Set<Watchlist> watchlists = new HashSet<>();
     @OneToMany(mappedBy = "searchHistoryId.account", cascade = CascadeType.ALL)
     private Set<SearchHistory> searchHistories = new HashSet<>();

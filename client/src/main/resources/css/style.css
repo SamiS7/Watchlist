@@ -1,0 +1,282 @@
+* {
+    -body-bgc: #1c1c1c;
+    -menu-bgc: -body-bgc;
+    -menu-border-color: #2a2a2a;
+    -menu-hover-color: #151515;
+    -body-font-color: #d7d7d7;
+    -menu-font-color: #dadada;
+    -menu-width: 400;
+    -menu-button-height: 30;
+    -textField-color: #626262;
+    -search-button-color: #0077ff;
+    -profile-menu-color: #333333;
+    -usernameL-bgc: #414141;
+    -scroll-thumb-color: #000000;
+}
+
+.root {
+    -fx-background-color: -body-bgc;
+    -fx-text-fill: -body-font-color;
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
+
+.menu {
+    -fx-pref-width: -menu-width;
+    -fx-min-width: 150;
+    -fx-pref-height: 1500;
+    -fx-background-color: -menu-bgc;
+    -fx-border-width: 0 3 0 0;
+    -fx-border-color: -menu-border-color;
+    -fx-border-style: solid;
+    -fx-alignment: top-center;
+    -fx-spacing: 5;
+    -fx-padding: 0;
+    -fx-border-insets: 0;
+}
+
+.menu .button, .menu .label {
+    -fx-background-color: -menu-bgc;
+    -fx-text-fill: -menu-font-color;
+    -fx-font-size: 20;
+    -fx-font-weight: 600;
+    -fx-pref-width: -menu-width;
+    -fx-pref-height: -menu-button-height;
+    -fx-padding: 15 0 15 8;
+    -fx-alignment: center-left;
+}
+
+.menu .profileB {
+    -fx-alignment: center;
+    -fx-padding: 0;
+}
+
+.menu .button:hover, .profileMenu .button:hover, .menu .active {
+    -fx-background-color: -menu-hover-color;
+}
+
+.menu .menuIcon {
+    -fx-border-width: 0 0 2 0;
+    -fx-border-insets: 0 0 20 0;
+    -fx-border-color: -menu-border-color;
+    -fx-border-style: solid;
+}
+
+.menu .menuIcon:hover {
+    -fx-background-color: none !important;
+}
+
+.menu .menuIcon:hover .menuIV {
+    -fx-scale-x: 1.1;
+}
+
+.profileMenu {
+    -fx-background-color: -profile-menu-color;
+    -fx-max-height: 300;
+    -fx-max-width: 220;
+    -fx-border-width: 2;
+    -fx-border-color: -textField-color;
+    -fx-border-style: solid;
+}
+
+.profileMenu * {
+    -fx-font-size: 16;
+    -fx-background-color: none;
+    -fx-text-fill: -body-font-color;
+    -fx-pref-width: 300;
+    -fx-alignment: center-left;
+}
+
+.profileMenu .usernameL {
+    -fx-background-color: -usernameL-bgc;
+}
+
+.content {
+    -fx-pref-width: 2000;
+    -fx-pref-height: 1500;
+    -fx-background-color: -body-bgc;
+    -fx-padding: 10;
+}
+
+.content > .tilePane {
+    -fx-border-width: 2;
+    -fx-border-color: -menu-border-color;
+    -fx-border-style: solid;
+}
+
+.searchBox {
+    -fx-pref-width: 2000;
+    -fx-spacing: 10;
+    -fx-alignment: top-center;
+}
+
+.searchBox .text-field, .searchBox .button, .msgL {
+    -fx-pref-height: 50;
+    -fx-font-size: 16;
+    -fx-text-fill: -body-font-color;
+}
+
+.searchBox .text-field {
+    -fx-pref-width: 500;
+    -fx-background-color: -textField-color;
+}
+
+.suggestionBox .button {
+    -fx-pref-width: 500;
+    -fx-padding: 10 0;
+    -fx-background-color: -menu-border-color;
+}
+
+.suggestionBox .button :hover {
+    -fx-opacity: .7;
+}
+
+.textFieldBox, .suggestionBox {
+    -fx-spacing: 5;
+}
+
+.suggestionBox {
+    -fx-background-color: -body-bgc;
+}
+
+.searchBox > .button, .textFieldBox .text-field {
+    -fx-min-height: 50;
+}
+
+.searchBox > .button {
+    -fx-background-color: -search-button-color;
+}
+
+.searchBox > .button {
+    -fx-pref-width: 100;
+}
+
+.msgL {
+    -fx-background-color: none;
+}
+
+.scrollPane, .scrollPane > .viewport {
+    -fx-background-color: none;
+    -fx-padding: 0;
+}
+
+.leftVB, .rightVB {
+    -fx-pref-height: 1500;
+    -fx-pref-width: 1000;
+    -fx-background-color: -body-bgc;
+}
+
+.leftVB {
+    -fx-spacing: 10;
+    -fx-pref-width: 600;
+}
+
+.borderpane .label, .movieRowPage .nothingFound {
+    -fx-text-fill: -body-font-color;
+    -fx-wrap-text: true;
+    -fx-font-size: 16;
+}
+
+.borderpane .title {
+    -fx-font-size: 30;
+    -fx-alignment: top-center;
+    -fx-padding: 0 0 20 0;
+}
+
+.plot {
+    -fx-border-insets: 10 0 50 0;
+    -fx-padding: 0 0 100 0;
+}
+
+.saveButton, .trailerButton, .logInB, .logInhideB {
+    -fx-alignment: bottom-center;
+    -fx-pref-width: 150;
+    -fx-pref-height: 30;
+    -fx-font-size: 16;
+    -fx-background-color: -search-button-color;
+}
+
+.trailerButton {
+    -fx-pref-width: 200;
+}
+
+.seenCheckBox {
+    -fx-text-fill: -body-font-color;
+}
+
+.trailerB, hideB {
+    -fx-background-color: #000000;
+    -fx-text-fill: -body-font-color;
+    -fx-font-size: 20;
+    -fx-pref-width: 40;
+    -fx-pref-height: 40;
+}
+
+.movieRow {
+    -fx-background-color: -body-bgc;
+}
+
+.imageBox {
+    -fx-background-color: -body-bgc;
+    -fx-spacing: 15;
+    -fx-pref-height: 300;
+}
+
+.movieRow .label, .movieRowPage > .label, .searching, .movieRowMoreB {
+    -fx-font-size: 25;
+    -fx-text-fill: -body-font-color;
+    -fx-background-color: none;
+}
+
+.movieRowPage {
+    -fx-spacing: 5;
+}
+
+.movieRowPage .mRTilePane {
+    -fx-vgap: 5;
+    -fx-hgap: 0;
+}
+
+.movieRowPage .nothingFound {
+    -fx-padding: 20;
+}
+
+.movieRowMoreB {
+    -fx-min-width: 100;
+    -fx-min-height: 100;
+    -fx-pref-height: 300;
+    -fx-background-color: -menu-hover-color;
+    -fx-padding: 0;
+}
+
+.searching, .movieRowMoreB {
+    -fx-font-size: 18;
+}
+
+.scroll-bar {
+    -fx-background-color: -menu-border-color;
+    -fx-opacity: .3;
+}
+
+.scroll-bar:hover {
+    -fx-opacity: 1;
+}
+
+.scroll-bar .track {
+    -fx-background-color: -menu-border-color;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -scroll-thumb-color;
+}
+
+.homePage, .movieRowPage {
+    -fx-background-color: -body-bgc;
+    -fx-padding: 10 0 0 15;
+}
+
+.homePageContent {
+    -fx-spacing: 30;
+}

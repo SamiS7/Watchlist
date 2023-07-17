@@ -1,6 +1,6 @@
 package at.watchlist.api;
 
-import at.watchlist.workloads.movie.MovieService;
+import at.watchlist.workloads.movie.MovieServiceImpl;
 import at.watchlist.workloads.movie.WatchlistService;
 
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @Path("/movie")
 public class MovieResource {
     @Inject
-    MovieService movieService;
+    MovieServiceImpl movieService;
     @Inject
     WatchlistService watchlistService;
 

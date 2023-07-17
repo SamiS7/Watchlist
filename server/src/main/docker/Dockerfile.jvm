@@ -21,7 +21,7 @@
 # docker run -i --rm -p 8080:8080 quarkus/server-jvm
 #
 ###
-FROM registry.access.redhat.com/ubi8/openjdk-17-runtime:1.10
+FROM registry.access.redhat.com/ubi8/openjdk-11-runtime:1.10
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
@@ -29,10 +29,10 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
-COPY --chown=185 server/target/quarkus-app/lib/ /deployments/lib/
-COPY --chown=185 server/target/quarkus-app/*.jar /deployments/
-COPY --chown=185 server/target/quarkus-app/app/ /deployments/app/
-COPY --chown=185 server/target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
+COPY --chown=185 target/quarkus-app/*.jar /deployments/
+COPY --chown=185 target/quarkus-app/app/ /deployments/app/
+COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
 
 EXPOSE 8080
 USER 185

@@ -2,7 +2,7 @@ package at.watchlist.workloads.search;
 
 import at.watchlist.entities.SearchHistoryId;
 import at.watchlist.entities.SearchWord;
-import at.watchlist.workloads.account.AccountRepo;
+import at.watchlist.workloads.account.AccountRepoImpl;
 import io.quarkus.panache.common.Sort;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -16,7 +16,7 @@ public class SearchHistoryService {
     @Inject
     private SearchWordRepo searchWordRepo;
     @Inject
-    private AccountRepo accountRepo;
+    private AccountRepoImpl accountRepo;
 
     public List<SearchWord> get(Long accountId) {
         var query = searchHistoryRepo.find("account_id", Sort.by("time").descending(), accountId)

@@ -12,7 +12,7 @@ import java.util.List;
 @ApplicationScoped
 public class WatchlistService {
     @Inject
-    private WatchlistRepo watchlistRepo;
+    private WatchlistRepoImpl watchlistRepo;
 
     public List<MovieInfos> getShortlyAdded(Long accountId, int start, int end) {
         var query = watchlistRepo.find("account_id",
