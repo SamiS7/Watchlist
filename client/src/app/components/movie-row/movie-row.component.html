@@ -1,8 +1,0 @@
-<section *ngIf="movieImgs && movieImgs.length > 0" id="{{id}}" class="movieRow">
-    <h2>{{rowTitle}}</h2>
-    <div>
-        <div id="movieRowImgs">
-            <app-movie-row-img *ngFor="let movie of movieImgs" [movieImg]="movie"></app-movie-row-img>
-        </div>
-    </div>
-</section>
